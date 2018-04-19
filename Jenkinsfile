@@ -30,11 +30,6 @@ pipeline {
                 echo 'Stage 4: Build global UI'
             }
         }
-        stage('Stage 4: Build global UI') {
-            steps {
-                echo 'Stage 4: Build global UI'
-            }
-        }
 
 /* Image build and initiation */
 
