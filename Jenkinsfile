@@ -1,11 +1,16 @@
 pipeline {
     agent any
 
-# Assests
+    environment { 
+        NEW_VAR = 'new variable'
+    }
+
+/* Assests */
 
     stages {
         stage('Stage 1: Build Microservices') {
             steps {
+                echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo 'Stage 1: Build Microservices...'
             }
         }
@@ -30,7 +35,7 @@ pipeline {
             }
         }
 
-# Image build and initiation
+/* Image build and initiation */
 
         stage('Stage 5: Build docker image: B2O-EP-IMAGE') {
             steps {
@@ -38,7 +43,7 @@ pipeline {
             }
         }
 
-# Beaming content -- RUN IN PARALLEL
+/* Beaming content -- RUN IN PARALLEL */
 
         stage('Stage 6: Beaming the content for AUTH and PUB') {
             steps {
@@ -47,7 +52,7 @@ pipeline {
             }
         }
 
-# Hotfix package install
+/* Hotfix package install */
 
         stage('Stage 7: Install HotFix package') {
             steps {
@@ -55,7 +60,7 @@ pipeline {
             }
         }
 
-# Compact and copy
+/* Compact and copy */
 
         stage('Stage 8: Compact and copy repo') {
             steps {
@@ -63,7 +68,7 @@ pipeline {
             }
         }
 
-# Build BSRO volumes
+/* Build BSRO volumes */
 
         stage('Stage 9: Build BSRO docker volumes (4 volumes)') {
             steps {
@@ -71,7 +76,7 @@ pipeline {
             }
         }
 
-# Build docker master image
+/* Build docker master image */
 
         stage('Stage 10: Build docker master image: B2O-MS-IMAGE') {
             steps {
