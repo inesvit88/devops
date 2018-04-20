@@ -31,8 +31,8 @@ pipeline {
 
 // Copy jars and wars to stage dirs
 
-		sh '[ -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
-                sh '[ -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
+		sh '[ ! -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
+                sh '[ ! -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
 
 		sh 'find $WORKSPACE/Micro_Services/* -name "microservices-code-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE'
 /*
