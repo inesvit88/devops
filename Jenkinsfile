@@ -70,7 +70,7 @@ pipeline {
                 git branch: 'ADMIN_DEV', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-admin.git'
 
-		/usr/local/maven/apache-maven-3.3.9/bin/mvn -f BSROAdmin/pom.xml clean install
+		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/BSROAdmin/pom.xml clean install'
 
 		sh 'find $WORKSPACE/BSROAdmin/target/* -name "BSROAdmin*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
             }
