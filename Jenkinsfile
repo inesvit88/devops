@@ -3,7 +3,6 @@ pipeline {
     agent any
 
     environment { 
-        NEW_VAR = "new variable"
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
     }
@@ -68,6 +67,12 @@ pipeline {
         stage('Stage 2: Build BSRO Admin WebApp') {
             steps {
 	    	echo 'Stage 2: Build BSRO Admin WebApp'
+                git branch: 'ADMIN_DEV', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro-admin.git'
+
+		/usr/local/maven/apache-maven-3.3.9/bin/mvn -f BSROAdmin/pom.xml clean install
+
+		sh 'find $WORKSPACE/BSROAdmin/target/* -name "BSROAdmin*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
             }
         }
         stage('Stage 3: Package and copy all global packages') {
@@ -91,10 +96,16 @@ pipeline {
 
 /* Beaming content -- RUN IN PARALLEL */
 
-        stage('Stage 6: Beaming the content for AUTH and PUB') {
+        stage('Stage 6 (PARALLEL RUN): Beaming the content for AUTH and PUB') {
             steps {
-                echo 'Stage 6: Beaming the content for AUTHOR'
-                echo 'Stage 6: Beaming the content for PUBLISH'
+		parallel(
+        	  author: {
+	                echo 'Stage 6: Beaming the content for AUTHOR'
+		  },
+		  publish: {
+	                echo 'Stage 6: Beaming the content for PUBLISH'
+		  }
+		)
             }
         }
 
