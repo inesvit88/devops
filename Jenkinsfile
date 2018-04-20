@@ -13,6 +13,12 @@ pipeline {
             steps {
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo 'Stage 1: Build Microservices...'
+#               build job: 'some-downtream-job-name'
+
+                git branch: 'refs/heads/DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://git.icrossing.net/web-development/bsro.git'
+
+
             }
         }
         stage('Stage 2: Build BSRO Admin WebApp') {
