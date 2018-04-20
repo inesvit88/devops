@@ -19,14 +19,13 @@ pipeline {
     stages {
         stage('Stage 1: Build Microservices') {
             steps {
-            	def ms_jar_dir = new File('$MS_JAR_STAGE')
-                def ms_war_dir = new File('$MS_WAR_STAGE')
 
-                // If stage dirs don't exist
-		if( !ms_jar_dir.exists() || !ms_war_dir.exists() ) {
-  			ms_jar_dir.mkdirs()
-			ms_war_dir.mkdirs()
-		}
+if (fileExists('$MS_JAR_STAGE')) {
+    echo 'Yes'
+} else {
+    echo 'No'
+}
+
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
 //               build job: 'MS-DEV-JAR-WAR'
