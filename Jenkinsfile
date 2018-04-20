@@ -31,7 +31,7 @@ pipeline {
 
                 sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar'
 
-                sh '[ ! -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
+                sh '[ \! -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
                 sh 'find $WORKSPACE/Micro_Services/* -name "microservices-code-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "alignment-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "appt-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \\;'
@@ -50,7 +50,7 @@ pipeline {
 
                 sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P war'
 
-                sh '[ ! -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
+                sh '[ \! -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
 		sh 'find $WORKSPACE/Micro_Services/* -name "appt-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "battery-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "contact-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
