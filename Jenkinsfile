@@ -48,10 +48,9 @@ pipeline {
 
 // Build and copy WARs to stage dir
 
-/*
                 sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P war'
 
-                sh '[ \! -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
+                sh '[ -d $MS_WAR_STAGE ] || mkdir -p $MS_WAR_STAGE'
 		sh 'find $WORKSPACE/Micro_Services/* -name "appt-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "battery-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "contact-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
@@ -64,7 +63,6 @@ pipeline {
 		sh 'find $WORKSPACE/Micro_Services/* -name "ecomm-stores-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "voice-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "login-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
-*/
             }
         }
         stage('Stage 2: Build BSRO Admin WebApp') {
