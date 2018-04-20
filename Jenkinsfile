@@ -26,30 +26,43 @@ pipeline {
 
                 git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+
+// Build and copy JARs to stage dir
+
                 sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar'
+
+                sh '[ ! -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
+                sh 'find $WORKSPACE/Micro_Services/* -name "microservices-code-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find $WORKSPACE/Micro_Services/* -name "alignment-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "appt-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "battery-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "contact-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "proxy-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "promo-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "stores-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "tires-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "vis-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "ecomm-stores-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "voice-0.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+		sh 'find Micro_Services/* -name "loginmicroservices-0.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \;'
+
+// Build and copy WARs to stage dir
+
                 sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P war'
 
-// Copy jars and wars to stage dirs
-
-		sh '[ ! -d $MS_JAR_STAGE ] && mkdir -p $MS_JAR_STAGE'
                 sh '[ ! -d $MS_WAR_STAGE ] && mkdir -p $MS_WAR_STAGE'
-
-		sh 'find $WORKSPACE/Micro_Services/* -name "microservices-code-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE'
-/*
-		find Micro_Services/* -name "alignment-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "appt-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "battery-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "contact-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "proxy-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "promo-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "stores-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "tires-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "vis-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "ecomm-stores-1.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "voice-0.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-		find Micro_Services/* -name "loginmicroservices-0.*.jar" -execdir /bin/cp {} /opt/projects/stage-microservices/ \;
-*/
-
+		sh 'find $WORKSPACE/Micro_Services/* -name "appt-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "battery-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "contact-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "proxy-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "promo-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "stores-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "tires-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "vis-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "alignment-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "ecomm-stores-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "voice-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
+		sh 'find Micro_Services/* -name "login-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \;'
             }
         }
         stage('Stage 2: Build BSRO Admin WebApp') {
