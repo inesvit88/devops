@@ -25,7 +25,7 @@ pipeline {
 
                 git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-                sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install'
+                sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar war'
 
 
             }
