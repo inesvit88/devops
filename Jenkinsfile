@@ -84,6 +84,7 @@ pipeline {
             steps {
                 echo 'Stage 3: Package and copy all global packages'
 
+		sh '[ -d $STAGE3_DESTINATION ] || mkdir -p $STAGE3_DESTINATION'
 // Build EC
                 git branch: '$EC_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
