@@ -5,6 +5,11 @@ pipeline {
     environment { 
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
+	EC_BRANCH = "DEV_OSGI"
+	OSGI_BRANCH = "DEV_OSGI"
+	MODES_BRANCH = "DEV_OSGI"
+	WORKFLOW_BRANCH = "DEV_OSGI"
+	STAGE3_DESTINATION = "/mnt/apps/bsro/assets/content/global"
     }
 /*
     tools { 
@@ -78,6 +83,29 @@ pipeline {
         stage('Stage 3: Package and copy all global packages') {
             steps {
                 echo 'Stage 3: Package and copy all global packages'
+
+// Build EC
+                git branch: '$EC_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P ec'
+                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-ec/target/bsro-ec-*.zip $STAGE3_DESTINATION'
+// Build Modes
+                git branch: '$MODES_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+  		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P modes'
+                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-modes/target/bsro-modes-*.zip $STAGE3_DESTINATION'
+  
+// Build Workflow 
+                git branch: '$WORKFLOW_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+   		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package -P workflow'
+   		sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-workflow/target/bsro-workflow-*.zip $STAGE3_DESTINATION'
+    
+// Build OSGi
+                git branch: '$OSGI_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+        	sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package   -P osgi'
+        	sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-osgi/target/bsro-osgi-*.zip $STAGE3_DESTINATION'
             }
         }
         stage('Stage 4: Build global UI') {
