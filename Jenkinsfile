@@ -1,11 +1,11 @@
 pipeline {
 
-
-
     agent any
 
     environment { 
-        NEW_VAR = 'new variable'
+        NEW_VAR = "new variable"
+        MS_JAR_STAGE = "/opt/projects/stage-microservices"
+        MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
     }
 /*
     tools { 
@@ -19,8 +19,16 @@ pipeline {
     stages {
         stage('Stage 1: Build Microservices') {
             steps {
+            	def ms_jar_dir = new File('$MS_JAR_STAGE')
+                def ms_war_dir = new File('$MS_WAR_STAGE')
+
+                // If stage dirs don't exist
+		if( !ms_jar_dir.exists() || !ms_war_dir.exists() ) {
+  			ms_jar_dir.mkdirs()
+			ms_war_dir.mkdirs()
+		}
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
-            	echo 'Stage 1: Build Microservices...'
+            	echo "Stage 1: Build Microservices..."
 //               build job: 'MS-DEV-JAR-WAR'
 
                 git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
