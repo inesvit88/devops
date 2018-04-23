@@ -20,8 +20,8 @@ pipeline {
 	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
 // Docker env variables
 
-	DOCKER_IMAGE_NAME=b2o-ci-prod-ep
-	DOCKER_CONTAINER_NAME=B2O_EP
+	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
+	DOCKER_CONTAINER_NAME = "B2O_EP"
     }
 /*
     tools { 
