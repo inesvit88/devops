@@ -176,7 +176,9 @@ pipeline {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
-			    echo $USERPASS
+
+			  curl -u '$USERPASS' 'http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls'
+
     			  '''
 			}
 		  },
