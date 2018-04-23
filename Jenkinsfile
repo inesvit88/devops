@@ -29,10 +29,6 @@ pipeline {
     stages {
         stage('Stage 1: Build Microservices') {
             steps {
-		withEnv(['MYTOOL_HOME=/usr/local/mytool']) {
-    sh '$MYTOOL_HOME/bin/start'
-  }
-
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
 
