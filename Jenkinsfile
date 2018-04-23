@@ -3,8 +3,14 @@ pipeline {
     agent any
 
     environment { 
+
+// !!! Update this variable on bsro-tools !!!
+        MVN_HOME = "/usr/local/maven/apache-maven-3.3.9"
+
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
+        MS_BRANCH = "DEV_MICROSERV_THAC"
+        ADMIN_BRANCH = "ADMIN_DEV"
 	EC_BRANCH = "DEV_OSGI"
 	OSGI_BRANCH = "DEV_OSGI"
 	MODES_BRANCH = "DEV_OSGI"
@@ -22,18 +28,26 @@ pipeline {
 
     stages {
         stage('Stage 1: Build Microservices') {
+	    WORKSPACE = $WORKSPACE/bsro
             steps {
 
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
+
 // build job: 'MS-DEV-JAR-WAR'
 
-                git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
-                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+//                git branch: '$MS_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+//                            url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+
+		checkout([$class: 'GitSCM', branches: [[name: '*/$MS_BRANCH']], 
+			doGenerateSubmoduleConfigurations: false, 
+		extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'MyDirectory']], 
+		submoduleCfg: [], 
+		userRemoteConfigs: [[credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea', url: 'https://inesvit@git.icrossing.net/web-development/bsro.git']]])
 
 // Build and copy JARs to stage dir
 
-                sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar'
+                sh '$MVN_HOME/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar'
 
                 sh '[ -d $MS_JAR_STAGE ] || mkdir -p $MS_JAR_STAGE'
                 sh 'find $WORKSPACE/Micro_Services/* -name "microservices-code-1.*.jar" -execdir /bin/cp {} $MS_JAR_STAGE \\;'
@@ -52,7 +66,7 @@ pipeline {
 
 // Build and copy WARs to stage dir
 
-                sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P war'
+                sh '$MVN_HOME/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P war'
 
                 sh '[ -d $MS_WAR_STAGE ] || mkdir -p $MS_WAR_STAGE'
 		sh 'find $WORKSPACE/Micro_Services/* -name "appt-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
@@ -72,10 +86,10 @@ pipeline {
         stage('Stage 2: Build BSRO Admin WebApp') {
             steps {
 	    	echo 'Stage 2: Build BSRO Admin WebApp'
-                git branch: 'ADMIN_DEV', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: '$ADMIN_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-admin.git'
 
-		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/BSROAdmin/pom.xml clean install'
+		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/BSROAdmin/pom.xml clean install'
 
 		sh 'find $WORKSPACE/BSROAdmin/target/* -name "BSROAdmin*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
             }
@@ -88,24 +102,24 @@ pipeline {
 // Build EC
                 git branch: '$EC_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P ec'
+		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P ec'
                 sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-ec/target/bsro-ec-*.zip $STAGE3_DESTINATION'
 // Build Modes
                 git branch: '$MODES_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-  		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P modes'
+  		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P modes'
                 sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-modes/target/bsro-modes-*.zip $STAGE3_DESTINATION'
   
 // Build Workflow 
                 git branch: '$WORKFLOW_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-   		sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package -P workflow'
+   		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package -P workflow'
    		sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-workflow/target/bsro-workflow-*.zip $STAGE3_DESTINATION'
     
 // Build OSGi
                 git branch: '$OSGI_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-        	sh '/usr/local/maven/apache-maven-3.3.9/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package   -P osgi'
+        	sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package   -P osgi'
         	sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-osgi/target/bsro-osgi-*.zip $STAGE3_DESTINATION'
             }
         }
@@ -168,6 +182,24 @@ pipeline {
             steps {
                 echo 'Stage 10: Build docker master image: B2O-MS-IMAGE'
             }
+        }
+    }
+    post {
+        always {
+            echo 'One way or another, I have finished'
+            deleteDir() /* clean up our workspace */
+        }
+        success {
+            echo 'I succeeeded!'
+        }
+        unstable {
+            echo 'I am unstable :/'
+        }
+        failure {
+            echo 'I failed :('
+        }
+        changed {
+            echo 'Things were different before...'
         }
     }
 }
