@@ -42,11 +42,6 @@ pipeline {
        	                     url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 		}
 /*
-		checkout([$class: 'GitSCM', branches: [[name: '*/$MS_BRANCH']], 
-			doGenerateSubmoduleConfigurations: false, 
-		extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'MyDirectory']], 
-		submoduleCfg: [], 
-		userRemoteConfigs: [[credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea', url: 'https://inesvit@git.icrossing.net/web-development/bsro.git']]])
 
 // Build and copy JARs to stage dir
 
