@@ -38,7 +38,7 @@ pipeline {
 		cd $WORKSPACE/bsro
 
 		'''
-                git branch: $MS_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: '$MS_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                      url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 /*
 
