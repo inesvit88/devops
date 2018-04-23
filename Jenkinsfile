@@ -37,9 +37,11 @@ pipeline {
 		[ -d $WORKSPACE/bsro ] || mkdir $WORKSPACE/bsro
 		cd $WORKSPACE/bsro
 
+  		git clone https://inesvit@git.icrossing.net/web-development/bsro.git
+
 		'''
-                git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
-                     url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+//                git branch: 'DEV_MICROSERV_THAC', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+//                     url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 /*
 
 // Build and copy JARs to stage dir
