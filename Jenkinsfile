@@ -9,7 +9,7 @@ pipeline {
 
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
-        MS_BRANCH = "DEV_MICROSERV_THAC"
+        MICROSERV_BRANCH = "DEV_MICROSERV_THAC"
         ADMIN_BRANCH = "ADMIN_DEV"
 	EC_BRANCH = "DEV_OSGI"
 	OSGI_BRANCH = "DEV_OSGI"
@@ -38,7 +38,7 @@ pipeline {
 		cd $WORKSPACE/bsro
 
 		'''
-                git branch: '$MS_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: '$MICROSERV_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                      url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 /*
 
