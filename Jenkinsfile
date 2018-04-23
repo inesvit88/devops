@@ -16,7 +16,12 @@ pipeline {
 	MODES_BRANCH = "DEV_OSGI"
 	WORKFLOW_BRANCH = "DEV_OSGI"
 	UI_BRANCH = "DEV_UI"
+	TOOLS_BRANCH = "TOOLS-RELEASES-THAC" 
 	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
+// Docker env variables
+
+	DOCKER_IMAGE_NAME=b2o-ci-prod-ep
+	DOCKER_CONTAINER_NAME=B2O_EP
     }
 /*
     tools { 
@@ -144,6 +149,19 @@ pipeline {
         stage('Stage 5 (B2O-EP-IMAGE): Build docker image: B2O-EP-IMAGE') {
             steps {
                 echo 'Stage 5: Build docker image: B2O-EP-IMAGE'
+// Build docker image: B2O-EP-IMAG
+// Cleanup workspace
+                deleteDir()
+                git branch: env.TOOLS_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro-releases.git'
+		sh '''
+		  cd $WORKSPACE/b2o-ci-prod-ep
+		  docker build --tag="$IMAGE_NAME" .
+		  
+		  CONTAINER_ID=`docker run --name $DOCKER_CONTAINER_NAME -i -d -p 4502-4503:4502-4503 -p 8080:8080 -p 81:80 -p 71:71 --add-host shop-bsro-fcac-pr.firestonecompleteautocare.com:63.137.180.2 $DOCKER_IMAGE_NAME`
+		  sleep 60
+
+		'''
             }
         }
 
