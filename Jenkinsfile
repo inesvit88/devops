@@ -33,6 +33,7 @@ pipeline {
 /* Assests */
 
     stages {
+/* **************************************************************************
         stage('Stage 1 (MS-DEV-JAR-WAR): Build Microservices') {
             steps {
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
@@ -144,7 +145,7 @@ pipeline {
             }
         }
 
-/* Image build and initiation */
+// Image build and initiation
 
         stage('Stage 5 (B2O-EP-IMAGE): Build docker image: B2O-EP-IMAGE') {
             steps {
@@ -164,14 +165,20 @@ pipeline {
 		'''
             }
         }
+********************************************************************** */
 
-/* Beaming content -- RUN IN PARALLEL */
+// Beaming content -- RUN IN PARALLEL 
 
         stage('Stage 6 (PARALLEL RUN for BEAM_ALL_REBUILT_PACKAGES-V1-4502 && BEAM_ALL_REBUILT_PACKAGES-V1-4503): Beaming the content for AUTH and PUB') {
             steps {
 		parallel(
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
+			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+    			  sh '''
+			    echo $USERPASS
+    			  '''
+			}
 		  },
 		  publish: {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
