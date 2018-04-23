@@ -15,7 +15,7 @@ pipeline {
 	OSGI_BRANCH = "DEV_OSGI"
 	MODES_BRANCH = "DEV_OSGI"
 	WORKFLOW_BRANCH = "DEV_OSGI"
-	STAGE3_DESTINATION = "/mnt/apps/bsro/assets/content/global"
+	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
     }
 /*
     tools { 
@@ -32,17 +32,8 @@ pipeline {
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
 
-/*
-		sh '''
-
-		[ -d $WORKSPACE/bsro ] || mkdir $WORKSPACE/bsro
-		cd $WORKSPACE/bsro
-
-		'''
-*/
                 git branch: env.MICROSERV_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                      url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-/*
 
 // Build and copy JARs to stage dir
 
@@ -80,13 +71,16 @@ pipeline {
 		sh 'find $WORKSPACE/Micro_Services/* -name "ecomm-stores-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "voice-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "login-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
-*/
             }
         }
         stage('Stage 2: Build BSRO Admin WebApp') {
             steps {
 	    	echo 'Stage 2: Build BSRO Admin WebApp'
-                git branch: '$ADMIN_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+
+// Cleanup workspace
+		deleteDir()
+		
+                git branch: env.ADMIN_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-admin.git'
 
 		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/BSROAdmin/pom.xml clean install'
@@ -98,29 +92,37 @@ pipeline {
             steps {
                 echo 'Stage 3: Package and copy all global packages'
 
-		sh '[ -d $STAGE3_DESTINATION ] || mkdir -p $STAGE3_DESTINATION'
+		sh '[ -d $GLOBAL_PKG_DESTINATION ] || mkdir -p $GLOBAL_PKG_DESTINATION'
 // Build EC
-                git branch: '$EC_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+// Cleanup workspace
+                deleteDir()
+                git branch: 'env.EC_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P ec'
-                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-ec/target/bsro-ec-*.zip $STAGE3_DESTINATION'
+                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-ec/target/bsro-ec-*.zip $GLOBAL_PKG_DESTINATION'
 // Build Modes
-                git branch: '$MODES_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+// Cleanup workspace
+                deleteDir()
+                git branch: 'env.MODES_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
   		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package  -P modes'
-                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-modes/target/bsro-modes-*.zip $STAGE3_DESTINATION'
+                sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-modes/target/bsro-modes-*.zip $GLOBAL_PKG_DESTINATION'
   
 // Build Workflow 
-                git branch: '$WORKFLOW_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+// Cleanup workspace
+                deleteDir()
+                git branch: 'env.WORKFLOW_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
    		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package -P workflow'
-   		sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-workflow/target/bsro-workflow-*.zip $STAGE3_DESTINATION'
+   		sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-workflow/target/bsro-workflow-*.zip $GLOBAL_PKG_DESTINATION'
     
 // Build OSGi
-                git branch: '$OSGI_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+// Cleanup workspace
+                deleteDir()
+                git branch: 'env.OSGI_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
         	sh '$MVN_HOME/bin/mvn -f $WORKSPACE/bsro/AEM_Components/pom.xml clean package   -P osgi'
-        	sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-osgi/target/bsro-osgi-*.zip $STAGE3_DESTINATION'
+        	sh 'cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/bsro-osgi/target/bsro-osgi-*.zip $GLOBAL_PKG_DESTINATION'
             }
         }
         stage('Stage 4: Build global UI') {
