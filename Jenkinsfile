@@ -28,7 +28,6 @@ pipeline {
 
     stages {
         stage('Stage 1: Build Microservices') {
-	    WORKSPACE = $WORKSPACE/bsro
             steps {
 
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
