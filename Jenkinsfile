@@ -29,15 +29,19 @@ pipeline {
     stages {
         stage('Stage 1: Build Microservices') {
             steps {
+		withEnv(['MYTOOL_HOME=/usr/local/mytool']) {
+    sh '$MYTOOL_HOME/bin/start'
+  }
 
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
 
 // build job: 'MS-DEV-JAR-WAR'
-
-//                git branch: '$MS_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
-//                            url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-
+                withEnv(['WORKSPACE=$WORKSPACE/bsro']) {
+	                git branch: '$MS_BRANCH', credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+       	                     url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+		}
+/*
 		checkout([$class: 'GitSCM', branches: [[name: '*/$MS_BRANCH']], 
 			doGenerateSubmoduleConfigurations: false, 
 		extensions: [[$class: 'RelativeTargetDirectory', relativeTargetDir: 'MyDirectory']], 
@@ -80,6 +84,7 @@ pipeline {
 		sh 'find $WORKSPACE/Micro_Services/* -name "ecomm-stores-1.*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "voice-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
 		sh 'find $WORKSPACE/Micro_Services/* -name "login-*.war" -execdir /bin/cp {} $MS_WAR_STAGE \\;'
+*/
             }
         }
         stage('Stage 2: Build BSRO Admin WebApp') {
