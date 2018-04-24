@@ -22,6 +22,9 @@ pipeline {
 
 	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME = "B2O_EP"
+// Beaming props
+	HOST = "bsro-tools.icrossing.com"
+	HOST_PORT = "4502"
     }
 /*
     tools { 
@@ -175,36 +178,20 @@ pipeline {
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
 
-/*
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
 
 			  set +x
-			  curl -u $USERPASS -v http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls
+			  #curl -u $USERPASS -v http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls
+
+
+			  #export HOST=env.HOST
+			  #export HOST_PORT=env.HOST_PORT
+
+			  /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_author_v2.sh $USERPASS
 
     			  '''
 			}
-
-*/
-
-        sh '''
-                find /mnt/apps/bsro/assets/content/global/author  -type f -exec stat --format '%Y :%y %n' "{}" \\; | sort -nr > .builddepencies
-        '''
-
-  script{
-    def depmap = [:]
-    readFile('.builddepencies').eachLine {
-        def m = (it =~ /([^=]*)=?(.*)/)
-        depmap[m[0][1].trim()]=m[0][2].trim()
-        m = null
-    }
-
-    // Just a check so it works (after script approval )
-    depmap.each {
-        println 'map: ' + it.key + '=' + it.value
-    }
-  }
-
 		  },
 		  publish: {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
