@@ -163,7 +163,7 @@ pipeline {
 		sh '''
 		  
 		  set +x
-		  cp -r $MS_WAR_STAGE $WORKSPACE/b2o-ci-prod-ep/
+		  cp -r $MS_WAR_STAGE $WORKSPACE/b2o-ci-prod-ep/assets/
 		  cd $WORKSPACE/b2o-ci-prod-ep
 		  docker build --tag="$DOCKER_IMAGE_NAME" -f Dockerfile.local .
 		  
