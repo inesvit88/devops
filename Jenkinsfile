@@ -180,15 +180,10 @@ pipeline {
 
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
-
 			  set +x
 			  #curl -u $USERPASS -v http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls
 
-
-			  #export HOST=env.HOST
-			  #export HOST_PORT=env.HOST_PORT
-
-			  /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_author_v2.sh $USERPASS
+			  /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_author_v2.sh
 
     			  '''
 			}
