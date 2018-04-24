@@ -174,16 +174,19 @@ pipeline {
 
         stage('Stage 6 (PARALLEL RUN for BEAM_ALL_REBUILT_PACKAGES-V1-4502 && BEAM_ALL_REBUILT_PACKAGES-V1-4503): Beaming the content for AUTH and PUB') {
             steps {
+// Cleanup workspace
+                deleteDir()
+                git branch: env.TOOLS_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro-releases.git'
 		parallel(
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
 
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
-			  set +x
-			  #curl -u $USERPASS -v http://localhost:4502/crx/packmgr/service.jsp?cmd=ls
 
-			  /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_author_v2.sh
+			  set +x
+			  ls -al $WORKSPACE/automation/beam_packages_author_v2.sh
 
     			  '''
 			}
@@ -192,10 +195,9 @@ pipeline {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
                         withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
                           sh '''
-                          set +x
-                          #curl -u $USERPASS -v http://bsro-tools.icrossing.com:4503/crx/packmgr/service.jsp?cmd=ls
 
-                          /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_publish_v2.sh
+                          set +x
+                          ls -al $WORKSPACE/automation/beam_packages_publish_v2.sh
 
                           '''
                         }
