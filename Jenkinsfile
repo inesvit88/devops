@@ -175,7 +175,7 @@ pipeline {
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
 
-
+/*
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
 
@@ -183,6 +183,25 @@ pipeline {
 			  curl -u $USERPASS -v http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls
 
     			  '''
+*/
+			   // Get name of needed modules 
+	sh '''
+		find /mnt/apps/bsro/assets/content/global/author  -type f -exec stat --format '%Y :%y %n' "{}" \; | sort -nr > .builddepencies
+	'''
+    def depmap = [:] 
+    readFile('.builddepencies').eachLine { 
+        def m = (it =~ /([^=]*)=?(.*)/) 
+        depmap[m[0][1].trim()]=m[0][2].trim() 
+        m = null 
+    } 
+
+    // Just a check so it works (after script approval ) 
+    depmap.each { 
+        println 'map: ' + it.key + '=' + it.value 
+    } 
+			
+
+
 			}
 		  },
 		  publish: {
