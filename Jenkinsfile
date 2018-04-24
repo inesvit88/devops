@@ -164,7 +164,7 @@ pipeline {
 		  
 		  set +x
 		  cd $WORKSPACE/b2o-ci-prod-ep
-		  docker build --tag="$IMAGE_NAME" .
+		  docker build --tag="$DOCKER_IMAGE_NAME" .
 		  
 		  CONTAINER_ID=`docker run --name $DOCKER_CONTAINER_NAME -i -d -p 4502-4503:4502-4503 -p 8080:8080 -p 81:80 -p 71:71 --add-host shop-bsro-fcac-pr.firestonecompleteautocare.com:63.137.180.2 $DOCKER_IMAGE_NAME`
 		  sleep 30
