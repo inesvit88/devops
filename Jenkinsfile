@@ -186,7 +186,7 @@ pipeline {
 */
 			   // Get name of needed modules 
 	sh '''
-		find /mnt/apps/bsro/assets/content/global/author  -type f -exec stat --format '%Y :%y %n' "{}" \; | sort -nr > .builddepencies
+		find /mnt/apps/bsro/assets/content/global/author  -type f -exec stat --format '%Y :%y %n' "{}" \\; | sort -nr > .builddepencies
 	'''
     def depmap = [:] 
     readFile('.builddepencies').eachLine { 
