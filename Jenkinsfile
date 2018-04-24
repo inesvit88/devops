@@ -190,7 +190,6 @@ pipeline {
 		  },
 		  publish: {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
-/********************** 
                         withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
                           sh '''
                           set +x
@@ -200,8 +199,6 @@ pipeline {
 
                           '''
                         }
-
-***********************/
 		  }
 		)
             }
