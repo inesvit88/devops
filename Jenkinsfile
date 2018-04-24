@@ -198,8 +198,6 @@ pipeline {
     // Just a check so it works (after script approval ) 
     depmap.each { 
         println 'map: ' + it.key + '=' + it.value 
-    } 
-			
 
 
 			}
