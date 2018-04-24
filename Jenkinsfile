@@ -160,8 +160,9 @@ pipeline {
                 deleteDir()
                 git branch: env.TOOLS_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-releases.git'
-/*************
 		sh '''
+		  
+		  set +x
 		  cd $WORKSPACE/b2o-ci-prod-ep
 		  docker build --tag="$IMAGE_NAME" .
 		  
@@ -170,10 +171,9 @@ pipeline {
 
 		'''
 
-*************/
-
             }
         }
+/****************************
 // Beaming content -- RUN IN PARALLEL 
 
         stage('Stage 6 (PARALLEL RUN for BEAM_ALL_REBUILT_PACKAGES-V1-4502 && BEAM_ALL_REBUILT_PACKAGES-V1-4503): Beaming the content for AUTH and PUB') {
@@ -205,6 +205,7 @@ pipeline {
 		)
             }
         }
+****************************/
 
 /* Hotfix package install */
 
