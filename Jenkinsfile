@@ -160,7 +160,7 @@ pipeline {
 		  docker build --tag="$IMAGE_NAME" .
 		  
 		  CONTAINER_ID=`docker run --name $DOCKER_CONTAINER_NAME -i -d -p 4502-4503:4502-4503 -p 8080:8080 -p 81:80 -p 71:71 --add-host shop-bsro-fcac-pr.firestonecompleteautocare.com:63.137.180.2 $DOCKER_IMAGE_NAME`
-		  sleep 60
+		  sleep 30
 
 		'''
             }
@@ -174,10 +174,13 @@ pipeline {
 		parallel(
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
+
+
 			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
     			  sh '''
 
-			  curl -u $USERPASS -v 'http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls' > /var/tmp/curl.auth 2>&1
+			  set +x
+			  curl -u $USERPASS -v http://bsro-tools.icrossing.com:4502/crx/packmgr/service.jsp?cmd=ls
 
     			  '''
 			}
