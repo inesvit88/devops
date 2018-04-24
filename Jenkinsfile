@@ -190,6 +190,18 @@ pipeline {
 		  },
 		  publish: {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
+/********************** 
+                        withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+                          sh '''
+                          set +x
+                          #curl -u $USERPASS -v http://bsro-tools.icrossing.com:4503/crx/packmgr/service.jsp?cmd=ls
+
+                          /opt/projects/bsro-builds/bsro-releases/automation/beam_packages_publish_v2.sh
+
+                          '''
+                        }
+
+***********************/
 		  }
 		)
             }
