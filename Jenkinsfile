@@ -292,7 +292,7 @@ pipeline {
 			sh '''
 
 			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
-			  aemsync -t http://$USERPASS@$HOST:HOST_PORT -w $JCR_ROOT
+			  aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT
 
 			'''
 		}
