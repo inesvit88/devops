@@ -220,23 +220,20 @@ pipeline {
                 deleteDir()
                 git branch: env.UI_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-/****************************
 
-    git archive --output=hotfix/hotfix.zip HEAD $(git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep -v 'sem/'  | grep -v '/content/bsro/' | grep -v 'fonts/');
-    cd hotfix
-    rm -rf AEM_Components
-    unzip hotfix.zip
-    cp $WORKSPACE/bsro/AEM_Components/pom.xml $WORKSPACE/bsro/hotfix/AEM_Components
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/pom-hotfix.xml $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui
-    
-    
-    #if [ ! -d $DIR ]; then
-    #	mkdir -p $DIR
-    #fi
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
-    
+		sh '''
+		  mkdir $WORKSPACE/hotfix
+    		  git archive --output=hotfix/hotfix.zip HEAD $(git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep -v 'sem/'  | grep -v '/content/bsro/' | grep -v 'fonts/')
+    		  cd hotfix
+    		  unzip hotfix.zip
+    		  cp $WORKSPACE/AEM_Components/pom.xml $WORKSPACE/hotfix/AEM_Components
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/pom-hotfix.xml $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui
+
+    		  DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
+		  mkdir -p $DIR/css
+		  mkdir -p $DIR/js
+		'''	
+/**************************    
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
@@ -298,10 +295,10 @@ pipeline {
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css
     cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css
-    
-***********************************/   
-
+   ****************************************/ 
 // Script #3:
+
+// Script #4:
 
 // === CONTENT_HOTFIX
 
