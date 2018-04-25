@@ -212,7 +212,7 @@ pipeline {
             steps {
                 echo 'Stage 7: Install HotFix package'
 // === UI_HOTFIX_V1
-// Script #1: Implemented as Part of Stage 4 & 5 to build and beam bsro-aem-ui-{version}.zip 
+// Script #1: Implemented as Part of Stage 4 & 5 to build and beam bsro-aem-ui-${version}.zip 
 
 // Script #2:
 
@@ -280,7 +280,16 @@ pipeline {
 		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css $HOTFIX_DIR/css/retrofit.css
 		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css $HOTFIX_DIR/css/styles.css
 		'''
-// Script #3:
+// Script #3: Sync up the content with Author
+
+		withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+			sh '''
+
+			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
+			  aemsync -t http://$USERPASS@$HOST:HOST_PORT -w $JCR_ROOT
+
+			'''
+		}
 
 // Script #4:
 
