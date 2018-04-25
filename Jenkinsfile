@@ -292,7 +292,10 @@ pipeline {
 			sh '''
 
 			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
-			  aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT
+			  RET_VAL=KILLSYNC aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT &
+			  sleep 30
+			  ps -aef | grep aemsync
+			  kill $(ps aux | grep 'aemsync' | awk '{print $2}')
 
 			'''
 		}
