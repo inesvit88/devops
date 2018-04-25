@@ -9,6 +9,7 @@ pipeline {
 
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
+	AUTOMATION_STAGE = "/opt/projects/bsro/automation"
         MICROSERV_BRANCH = "DEV_MICROSERV_THAC"
         ADMIN_BRANCH = "ADMIN_DEV"
 	EC_BRANCH = "DEV_OSGI"
@@ -20,11 +21,12 @@ pipeline {
 	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
 	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME = "B2O_EP"
-	HOST = "bsro-tools.icrossing.com"
+	HOST = "bsro-qa.icrossing.com"
 	HOST_PORT = "4502"
 
 // UI_HOTFIX_V1 variable
 	LAST_COMMIT = "11251bdc2"
+	DATE=20180502
     }
 /*
     tools { 
@@ -161,6 +163,10 @@ pipeline {
 		sh '''
 		  
 		  set +x
+// Stage automation scripts for later use
+		  [ -d $AUTOMATION_STAGE ] || mkdir -p $AUTOMATION_STAGE
+		  cp $WORKSPACE/automation/* $AUTOMATION_STAGE
+
 		  cp -r $MS_WAR_STAGE $WORKSPACE/b2o-ci-prod-ep/assets/
 		  cd $WORKSPACE/b2o-ci-prod-ep
 		  docker build --tag="$DOCKER_IMAGE_NAME" -f Dockerfile.local .
@@ -185,7 +191,7 @@ pipeline {
     			  sh '''
 
 			  set +x
-			  ls -al $WORKSPACE/automation/beam_packages_author_v2.sh
+			  ls -al $AUTOMATION_STAGE/beam_packages_author_v2.sh
 
     			  '''
 			}
@@ -196,7 +202,7 @@ pipeline {
                           sh '''
 
                           set +x
-                          ls -al $WORKSPACE/automation/beam_packages_publish_v2.sh
+                          ls -al $AUTOMATION_STAGE/beam_packages_publish_v2.sh
 
                           '''
                         }
@@ -292,7 +298,36 @@ pipeline {
 		}
 
 // Script #4:
+		sh '''
+		  cd $WORKSPACE/hotfix
 
+		  find . -type f -name ".content.xml" -print -exec touch '{}' +
+
+		  groovy $AUTOMATION_STAGE/workspaceFilter.groovy
+		  mkdir -p ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault
+		  cp filterUi.xml ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault/filterUiHotfix.xml
+		'''
+                withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', passwordVariable: 'PASSWD', variable: 'USERPASS')]) {
+                        sh '''
+			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASSWD -P ui-hotfix
+			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASSWD -P ui-hotfix-build
+		  	  [ -f $WORKSPACE/hotfix/bsro-ui-hotfix*.zip ] && rm bsro-ui-hotfix*.zip
+
+		  	  # Download package
+ 		  	  FILE=`find . -type f -name "bsro-ui-hotfix*.zip" -printf '%f\n'`
+		  	  if [ ! -f $FILE ]; then
+		    	    echo "curl -u $USERPASS $HOST:HOST_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE"
+		            curl -u $USER_ID:$PASSWD $proto$url:4502/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE
+		            TMP_DATE=`date +%Y-%m-%d_%H-%M-%S`
+		            FILE_NAME=`echo $FILE | sed -e "s/.zip/_$TMP_DATE.zip/"`
+                            cp $FILE $DESTINATION/hotfix/$FILE_NAME
+                          fi
+
+			  # Install package on publisher
+			  HOST_PORT=4503
+			  curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
+			'''
+		}
 // === CONTENT_HOTFIX
 
             }
