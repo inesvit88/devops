@@ -229,73 +229,57 @@ pipeline {
     		  cp $WORKSPACE/AEM_Components/pom.xml $WORKSPACE/hotfix/AEM_Components
 		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/pom-hotfix.xml $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui
 
-    		  DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
-		  mkdir -p $DIR/css
-		  mkdir -p $DIR/js
-		'''	
-/**************************    
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
+    		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
+		  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
+    		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js $HOTFIX_DIR/js/main.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css $HOTFIX_DIR/css/main.css
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/*.txt $HOTFIX_DIR 
     
     
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
+		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib
+              	  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
     
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/css/main.css
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/js/main.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/*.txt $HOTFIX_DIR
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/css/main.css $HOTFIX_DIR/css/main.css
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/js/main.js $HOTFIX_DIR/js/main.js
     
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
+		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib
+		  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
     
-    #if [ ! -d $DIR ]; then
-    # 	mkdir -p $DIR
-    #fi
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/*.txt $HOTFIX_DIR
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/js/main.js $HOTFIX_DIR/js/main.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/css/main.css $HOTFIX_DIR/css/main.css
     
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/js/main.js
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/css/main.css
+		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib
+		  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
+
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/*.txt $HOTFIX_DIR
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/js/main.js $HOTFIX_DIR/js/main.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/css/main.css $HOTFIX_DIR/css/main.css
     
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
-    #if [ ! -d $DIR ]; then
-    # 	mkdir -p $DIR
-    #fi
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/js/main.js
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/css/main.css
+		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib
+		  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
+
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/*.txt $HOTFIX_DIR
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/js/main.js $HOTFIX_DIR/js/main.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/css/main.css $HOTFIX_DIR/css/main.css
     
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
-    #if [ ! -d $DIR ]; then
-    # 	mkdir -p $DIR
-    #fi
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/js/main.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/js/main.js
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/css/main.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/css/main.css
+		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib
+		  mkdir -p $HOTFIX_DIR/css
+		  mkdir -p $HOTFIX_DIR/js
+		  cp -R $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/* $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro
     
-    #BSRO
-    DIR=$WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib
-    mkdir -p $DIR/css
-    mkdir -p $DIR/js
-    #if [ ! -d $DIR ]; then
-    # 	mkdir -p $DIR
-    #fi
-    
-         # bsro/bsro
-    cp -R $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/* $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro
-    
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/*.txt $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/js/base.js $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/js/base.js
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css
-    cp $WORKSPACE/bsro/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css $WORKSPACE/bsro/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css
-   ****************************************/ 
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/*.txt $HOTFIX_DIR
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/js/base.js $HOTFIX_DIR/js/base.js
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css $HOTFIX_DIR/css/global.css
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css $HOTFIX_DIR/css/retrofit.css
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css $HOTFIX_DIR/css/styles.css
+		'''
 // Script #3:
 
 // Script #4:
