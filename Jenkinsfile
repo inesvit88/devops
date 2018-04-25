@@ -18,13 +18,13 @@ pipeline {
 	UI_BRANCH = "DEV_UI"
 	TOOLS_BRANCH = "TOOLS-RELEASES-THAC" 
 	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
-// Docker env variables
-
 	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME = "B2O_EP"
-// Beaming props
 	HOST = "bsro-tools.icrossing.com"
 	HOST_PORT = "4502"
+
+// UI_HOTFIX_V1 variable
+	LAST_COMMIT = "11251bdc2"
     }
 /*
     tools { 
@@ -45,7 +45,7 @@ pipeline {
                 git branch: env.MICROSERV_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
                      url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 
-// Build and copy JARs to stage dir
+// !!! ----- TO BE DELETED ----- Build and copy JARs to stage dir
 
                 sh '$MVN_HOME/bin/mvn -f $WORKSPACE/Micro_Services/pom.xml clean install -P jar'
 
@@ -150,8 +150,6 @@ pipeline {
 
 // Image build and initiation
 
-************************************************* */
-
         stage('Stage 5 (B2O-EP-IMAGE): Build docker image: B2O-EP-IMAGE') {
             steps {
                 echo 'Stage 5: Build docker image: B2O-EP-IMAGE'
@@ -174,7 +172,7 @@ pipeline {
 
             }
         }
-/****************************
+
 // Beaming content -- RUN IN PARALLEL 
 
         stage('Stage 6 (PARALLEL RUN for BEAM_ALL_REBUILT_PACKAGES-V1-4502 && BEAM_ALL_REBUILT_PACKAGES-V1-4503): Beaming the content for AUTH and PUB') {
@@ -213,9 +211,33 @@ pipeline {
         stage('Stage 7 (CONTENT_HOTFIX): Install HotFix package') {
             steps {
                 echo 'Stage 7: Install HotFix package'
+// UI_HOTFIX_V1
+
+// Cleanup workspace
+                deleteDir()
+                git branch: env.UI_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+		sh '''
+		  set +x
+		  $MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package -P ui
+		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/target/bsro-ui-*.zip $GLOBAL_PKG_DESTINATION
+		  cd $GLOBAL_PKG_DESTINATION
+		  FILE=`find . -type f -name "bsro-ui-*.zip" -printf '%T@ %f\n' | sort -n | tail -1 | cut -f2- -d" "`
+		  echo $FILE
+
+  		  # Install package on Author
+		  echo "curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui" -F force=true -F install=true "
+		  #curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui" -F force=true -F install=true 
+  
+		  # Install package on publisher
+		  HOST_PORT=4503
+
+		  echo "curl -u $USER_ID:$PASSWD $proto$url:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui" -F force=true -F install=true"
+		  #curl -u $USER_ID:$PASSWD $proto$url:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui" -F force=true -F install=true 
+
+		'''
             }
         }
-
 /* Compact and copy */
 
         stage('Stage 8 (COMPACT_REPO && COPY_REPO): Compact and copy repo') {
