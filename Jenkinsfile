@@ -333,11 +333,21 @@ pipeline {
                 git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 
+
+		withCredentials([usernamePassword(credentialsId: env.GIT_CREDS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+			sh '''
+			  git fetch --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@git.icrossing.net/web-development/bsro.git"
+                          git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
+			'''
+
+    		}
+
 		withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
 
 			sh '''
 			  set +x
-		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
+			  cd $WORKSPACE
+		  	  #git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
 
 			  if [ -s filter.txt ]
 		    	    then
