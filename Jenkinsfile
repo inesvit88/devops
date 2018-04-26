@@ -318,10 +318,10 @@ pipeline {
 			  USERPASS="$USER:$PASS"
 			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix
 			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix-build
- 		  	  FILE=`find . -type f -name "bsro-ui-hotfix*.zip"`
+ 		  	  HOTFIX_FILE=`find . -type f -name "bsro-ui-hotfix*.zip" | grep target`
 			  # Install package on publisher
 			  HOST_PORT=4503
-			  curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
+			  curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
 			'''
 		}
 // === CONTENT_HOTFIX
