@@ -337,7 +337,7 @@ pipeline {
 
 			sh '''
 			  set +x
-		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep  'content/bsro/' | sed 's/AEM_Components\/bsro-aem-ui\/src\/main\/content\/jcr_root//g' | sed 's/\/.content\.xml//g' > filter.txt
+		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\/bsro-aem-ui\/src\/main\/content\/jcr_root//g" | sed "s/\/.content\.xml//g" > filter.txt
 
 			  if [ -s filter.txt ]
 		    	    then
@@ -345,18 +345,18 @@ pipeline {
   			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME?cmd=create -d packageName=$CONTENT_HOTFIX_PKGNAME-d groupName=bsro_hotfix
   
 			    # Update Package
-			    FJSON='['
+			    FJSON="[\"
 			      while read line
   				do
 				FJSON=$FJSON"{'root':'$line', 'rules':[{'modifier':'include', 'pattern':'$line(\.*)'}]},"
 				done < filter.txt
-			    FJSON=$FJSON']'
+			    FJSON=$FJSON"]"
   
   			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/update.jsp \
 							    -F path=/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME -F packageName=$CONTENT_HOTFIX_PKGNAME \
 							    -F groupName=bsro_hotfix \
 							    -F filter=@output.txt \
-							    -F '_charset_=UTF-8'
+							    -F _charset_=UTF-
 
 			    # Build Package
 			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME.zip?cmd=build
