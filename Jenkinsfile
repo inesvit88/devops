@@ -337,7 +337,7 @@ pipeline {
 
 			sh '''
 			  set +x
-		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\/bsro-aem-ui\/src\/main\/content\/jcr_root//g" | sed "s/\/.content\.xml//g" > filter.txt
+		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
 
 			  if [ -s filter.txt ]
 		    	    then
