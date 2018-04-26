@@ -224,6 +224,8 @@ pipeline {
 
 // Script #2:
 
+/*************************** 
+
 // Cleanup workspace
                 deleteDir()
                 git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
@@ -300,7 +302,7 @@ pipeline {
 
 			'''
 		}
-
+*************************************** /
 // Script #4:
 		sh '''
 		  cd $WORKSPACE/hotfix
@@ -313,21 +315,10 @@ pipeline {
 		'''
 		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS']]) {
                         sh '''
-			  export USERPASS="$USER:$PASS"
-			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix
-			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix-build
-		  	  [ -f $WORKSPACE/hotfix/bsro-ui-hotfix*.zip ] && rm bsro-ui-hotfix*.zip
-
-		  	  # Download package
- 		  	  FILE=`find . -type f -name "bsro-ui-hotfix*.zip" -printf '%f\n'`
-		  	  if [ ! -f $FILE ]; then
-		    	    echo "curl -u $USERPASS $HOST:HOST_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE"
-		            curl -u $USERPASS $HOST:HOST_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE
-		            TMP_DATE=`date +%Y-%m-%d_%H-%M-%S`
-		            FILE_NAME=`echo $FILE | sed -e "s/.zip/_$TMP_DATE.zip/"`
-                            cp $FILE $WORKSPACE/hotfix/$FILE_NAME
-                          fi
-
+			  USERPASS="$USER:$PASS"
+			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix
+			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix-build
+ 		  	  FILE=`find . -type f -name "bsro-ui-hotfix*.zip"`
 			  # Install package on publisher
 			  HOST_PORT=4503
 			  curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
