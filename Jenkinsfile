@@ -4,32 +4,35 @@ pipeline {
 
     environment { 
 
-// !!! Update this variable on bsro-tools !!!
-        MVN_HOME = "/usr/local/maven/apache-maven-3.3.9"
-	AEM_ADMIN_CREDS = "5b82df01-8095-4fad-9fa0-7e0621537e72"
-	GIT_CREDS = "3b46d48c-b231-4771-ac38-8dd56d10a1ea"
+// !!! Update these variables on bsro-tools Jenkins!!!
+        MVN_HOME="/usr/local/maven/apache-maven-3.3.9"
+	AEM_ADMIN_CREDS="5b82df01-8095-4fad-9fa0-7e0621537e72"
+	GIT_CREDS="3b46d48c-b231-4771-ac38-8dd56d10a1ea"
 
-        MS_JAR_STAGE = "/opt/projects/stage-microservices"
-        MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
-	AUTOMATION_STAGE = "/opt/projects/bsro/automation"
-        MICROSERV_BRANCH = "DEV_MICROSERV_THAC"
-        ADMIN_BRANCH = "ADMIN_DEV"
-	EC_BRANCH = "DEV_OSGI"
-	OSGI_BRANCH = "DEV_OSGI"
-	MODES_BRANCH = "DEV_OSGI"
-	WORKFLOW_BRANCH = "DEV_OSGI"
-	UI_BRANCH = "DEV_UI"
-	TOOLS_BRANCH = "TOOLS-RELEASES-THAC" 
-	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
-	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
-	DOCKER_CONTAINER_NAME = "B2O_EP"
-	HOST = "bsro-tools.icrossing.com"
-	A_PORT = "14502"
-	P_PORT = "14503"
-
+        MS_JAR_STAGE="/opt/projects/stage-microservices"
+        MS_WAR_STAGE="/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
+	AUTOMATION_STAGE="/opt/projects/bsro/automation"
+        MICROSERV_BRANCH="DEV_MICROSERV_THAC"
+        ADMIN_BRANCH="ADMIN_DEV"
+	EC_BRANCH="DEV_OSGI"
+	OSGI_BRANCH="DEV_OSGI"
+	MODES_BRANCH="DEV_OSGI"
+	WORKFLOW_BRANCH="DEV_OSGI"
+	UI_BRANCH="DEV_UI"
+	TOOLS_BRANCH="TOOLS-RELEASES-THAC" 
+	GLOBAL_PKG_DESTINATION="/mnt/apps/bsro/assets/content/global"
+	DOCKER_IMAGE_NAME="b2o-ci-prod-ep"
+	DOCKER_CONTAINER_NAME="B2O_EP"
+	HOST="bsro-tools.icrossing.com"
+	A_PORT="14502"
+	P_PORT="14503"
 // UI_HOTFIX_V1 variable
-	LAST_COMMIT = "11251bdc2"
-	DATE = 20180502
+	LAST_COMMIT="11251bdc2"
+	DATE="20180502"
+// CONTENT_HOTFIX variables
+	CONTENT_HOTFIX_VERSION="1.1.14_20180502"
+	CONTENT_HOTFIX_PKGNAME="bsro-content-hotfix-$CONTENT_HOTFIX_VERSION"
+
     }
 /*
     tools { 
@@ -217,7 +220,7 @@ pipeline {
 
 /* Hotfix package install */
 
-        stage('Stage 7 (CONTENT_HOTFIX): Install HotFix package') {
+        stage('Stage 7 (UI_HOTFIX_V1-->CONTENT_HOTFIX): Install HotFix package') {
             steps {
                 echo 'Stage 7: Install HotFix package'
 // === UI_HOTFIX_V1
@@ -324,7 +327,50 @@ pipeline {
 			  curl -u $USERPASS $HOST:$P_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
 			'''
 		}
-// === CONTENT_HOTFIX
+// =========================== CONTENT_HOTFIX =====================
+// Cleanup WORKSPACE
+		deleteDir()
+                git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
+                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
+
+		withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
+
+			sh '''
+			  set +x
+		  	  git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep  'content/bsro/' | sed 's/AEM_Components\/bsro-aem-ui\/src\/main\/content\/jcr_root//g' | sed 's/\/.content\.xml//g' > filter.txt
+
+			  if [ -s filter.txt ]
+		    	    then
+			    # Create a package
+  			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME?cmd=create -d packageName=$CONTENT_HOTFIX_PKGNAME-d groupName=bsro_hotfix
+  
+			    # Update Package
+			    FJSON='['
+			      while read line
+  				do
+				FJSON=$FJSON"{'root':'$line', 'rules':[{'modifier':'include', 'pattern':'$line(\.*)'}]},"
+				done < filter.txt
+			    FJSON=$FJSON']'
+  
+  			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/update.jsp \
+							    -F path=/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME -F packageName=$CONTENT_HOTFIX_PKGNAME \
+							    -F groupName=bsro_hotfix \
+							    -F filter=@output.txt \
+							    -F '_charset_=UTF-8'
+
+			    # Build Package
+			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME.zip?cmd=build
+  
+			    # Download Package
+			    curl -u $USERPASS http://$HOST:$A_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME.zip > $CONTENT_HOTFIX_PKGNAME.zip
+  
+			    # Upload & Install package to publish
+			    curl -u $USERPASS -F file=@"CONTENT_HOTFIX_PKGNAME.zip" -F name="bsro_hotfix" -F force=true -F install=true http://$HOST:P_PORT/crx/packmgr/service.jsp
+			  else
+  			    echo "Filter file is empty, No content update for now !!!"
+			  fi
+			'''
+		}
 
             }
         }
