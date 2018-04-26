@@ -313,7 +313,7 @@ pipeline {
 		'''
 		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS']]) {
                         sh '''
-			  USERPASS = "$USER:$PASS"
+			  export USERPASS = "$USER:$PASS"
 			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix
 			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix-build
 		  	  [ -f $WORKSPACE/hotfix/bsro-ui-hotfix*.zip ] && rm bsro-ui-hotfix*.zip
