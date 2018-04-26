@@ -336,7 +336,7 @@ pipeline {
 
 		withCredentials([usernamePassword(credentialsId: env.GIT_CREDS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
 			sh '''
-			  git fetch --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@git.icrossing.net/web-development/bsro.git"
+			  git fetch --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@git.icrossing.net/web-development/bsro.git
                           git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
 			'''
 
