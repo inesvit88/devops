@@ -23,9 +23,9 @@ pipeline {
 	GLOBAL_PKG_DESTINATION = "/mnt/apps/bsro/assets/content/global"
 	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME = "B2O_EP"
-	HOST = "bsro-qa.icrossing.com"
-	A_PORT = "4502"
-	P_PORT = "4503"
+	HOST = "bsro-tools.icrossing.com"
+	A_PORT = "14502"
+	P_PORT = "14503"
 
 // UI_HOTFIX_V1 variable
 	LAST_COMMIT = "11251bdc2"
