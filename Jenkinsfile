@@ -306,7 +306,6 @@ pipeline {
 
 			'''
 		}
-***************************************/
 // Script #4:
 		sh '''
 		  cd $WORKSPACE/hotfix
@@ -327,6 +326,7 @@ pipeline {
 			  curl -u $USERPASS $HOST:$P_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
 			'''
 		}
+***************************************/
 // =========================== CONTENT_HOTFIX =====================
 // Cleanup WORKSPACE
 		deleteDir()
