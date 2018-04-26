@@ -348,7 +348,7 @@ pipeline {
 			    FJSON="[\"
 			      while read line
   				do
-				FJSON=$FJSON"{'root':'$line', 'rules':[{'modifier':'include', 'pattern':'$line(\.*)'}]},"
+				FJSON=$FJSON"{'root':'$line', 'rules':[{'modifier':'include', 'pattern':'$line(\\.*)'}]},"
 				done < filter.txt
 			    FJSON=$FJSON"]"
   
