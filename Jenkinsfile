@@ -24,11 +24,12 @@ pipeline {
 	DOCKER_IMAGE_NAME = "b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME = "B2O_EP"
 	HOST = "bsro-qa.icrossing.com"
-	HOST_PORT = "4502"
+	A_PORT = "4502"
+	P_PORT = "4503"
 
 // UI_HOTFIX_V1 variable
 	LAST_COMMIT = "11251bdc2"
-	DATE=20180502
+	DATE = 20180502
     }
 /*
     tools { 
@@ -296,7 +297,7 @@ pipeline {
 			sh '''
 
 			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
-			  aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT &
+			  aemsync -t http://$USERPASS@$HOST:$A_PORT -w $JCR_ROOT &
 			  sleep 30
 			  kill $(ps -aux | grep "[a]emsync" | awk '{print $2}')
 
@@ -316,12 +317,11 @@ pipeline {
 		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS']]) {
                         sh '''
 			  USERPASS="$USER:$PASS"
-			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix
-			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dport=$HOST_PORT -Dcq.password=$PASS -P ui-hotfix-build
+			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dport=$A_PORT -Dcq.password=$PASS -P ui-hotfix
+			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dport=$A_PORT -Dcq.password=$PASS -P ui-hotfix-build
  		  	  HOTFIX_FILE=`find . -type f -name "bsro-ui-hotfix*.zip" | grep target`
 			  # Install package on publisher
-			  HOST_PORT=4503
-			  curl -u $USERPASS $HOST:$HOST_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
+			  curl -u $USERPASS $HOST:$P_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
 			'''
 		}
 // === CONTENT_HOTFIX
