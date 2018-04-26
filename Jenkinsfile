@@ -6,6 +6,8 @@ pipeline {
 
 // !!! Update this variable on bsro-tools !!!
         MVN_HOME = "/usr/local/maven/apache-maven-3.3.9"
+	AEM_ADMIN_CREDS = "5b82df01-8095-4fad-9fa0-7e0621537e72"
+	GIT_CREDS = "3b46d48c-b231-4771-ac38-8dd56d10a1ea"
 
         MS_JAR_STAGE = "/opt/projects/stage-microservices"
         MS_WAR_STAGE = "/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
@@ -44,7 +46,7 @@ pipeline {
                 echo "Running ${env.BUILD_ID} on ${env.JENKINS_URL}"
             	echo "Stage 1: Build Microservices..."
 
-                git branch: env.MICROSERV_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.MICROSERV_BRANCH, credentialsId: env.GIT_CREDS,
                      url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 
 // !!! ----- TO BE DELETED ----- Build and copy JARs to stage dir
@@ -92,7 +94,7 @@ pipeline {
 // Cleanup workspace
 		deleteDir()
 		
-                git branch: env.ADMIN_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.ADMIN_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-admin.git'
 
 		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/BSROAdmin/pom.xml clean install'
@@ -108,14 +110,14 @@ pipeline {
 // Build EC
 // Cleanup workspace
                 deleteDir()
-                git branch: env.EC_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.EC_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package  -P ec'
                 sh 'cp $WORKSPACE/AEM_Components/bsro-aem-ui/bsro-ec/target/bsro-ec-*.zip $GLOBAL_PKG_DESTINATION'
 // Build Modes
 // Cleanup workspace
                 deleteDir()
-                git branch: env.MODES_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.MODES_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
   		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package  -P modes'
                 sh 'cp $WORKSPACE/AEM_Components/bsro-aem-ui/bsro-modes/target/bsro-modes-*.zip $GLOBAL_PKG_DESTINATION'
@@ -123,7 +125,7 @@ pipeline {
 // Build Workflow 
 // Cleanup workspace
                 deleteDir()
-                git branch: env.WORKFLOW_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.WORKFLOW_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
    		sh '$MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package -P workflow'
    		sh 'cp $WORKSPACE/AEM_Components/bsro-aem-ui/bsro-workflow/target/bsro-workflow-*.zip $GLOBAL_PKG_DESTINATION'
@@ -131,7 +133,7 @@ pipeline {
 // Build OSGi
 // Cleanup workspace
                 deleteDir()
-                git branch: env.OSGI_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.OSGI_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
         	sh '$MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package   -P osgi'
         	sh 'cp $WORKSPACE/AEM_Components/bsro-aem-ui/bsro-osgi/target/bsro-osgi-*.zip $GLOBAL_PKG_DESTINATION'
@@ -143,7 +145,7 @@ pipeline {
 // Build global UI
 // Cleanup workspace
                	deleteDir()
-               	git branch: env.UI_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+               	git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
                	sh '$MVN_HOME/bin/mvn -f $WORKSPACE/AEM_Components/pom.xml clean package   -P ui'
 		sh 'cp $WORKSPACE/AEM_Components/bsro-aem-ui/target/bsro-ui-*.zip $GLOBAL_PKG_DESTINATION'
@@ -158,7 +160,7 @@ pipeline {
 // Build docker image: B2O-EP-IMAG
 // Cleanup workspace
                 deleteDir()
-                git branch: env.TOOLS_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.TOOLS_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro-releases.git'
 		sh '''
 		  
@@ -187,7 +189,7 @@ pipeline {
         	  author: {
 	                echo 'Stage 6: Beaming the content for AUTHOR'
 
-			withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+			withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
     			  sh '''
 
 			  set +x
@@ -198,7 +200,7 @@ pipeline {
 		  },
 		  publish: {
 	                echo 'Stage 6: Beaming the content for PUBLISH'
-                        withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+                        withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
                           sh '''
 
                           set +x
@@ -224,7 +226,7 @@ pipeline {
 
 // Cleanup workspace
                 deleteDir()
-                git branch: env.UI_BRANCH, credentialsId: '3b46d48c-b231-4771-ac38-8dd56d10a1ea',
+                git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 
 		sh '''
@@ -288,14 +290,13 @@ pipeline {
 		'''
 // Script #3: Sync up the content with Author
 
-		withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', variable: 'USERPASS')]) {
+		withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
 			sh '''
 
 			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
-			  RET_VAL=KILLSYNC aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT &
+			  aemsync -t http://$USERPASS@$HOST:$HOST_PORT -w $JCR_ROOT &
 			  sleep 30
-			  ps -aef | grep aemsync
-			  kill $(ps aux | grep 'aemsync' | awk '{print $2}')
+			  kill $(ps -aux | grep "[a]emsync" | awk '{print $2}')
 
 			'''
 		}
@@ -310,20 +311,21 @@ pipeline {
 		  mkdir -p ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault
 		  cp filterUi.xml ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault/filterUiHotfix.xml
 		'''
-                withCredentials([usernameColonPassword(credentialsId: '5b82df01-8095-4fad-9fa0-7e0621537e72', passwordVariable: 'PASSWD', variable: 'USERPASS')]) {
+		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS']]) {
                         sh '''
-			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASSWD -P ui-hotfix
-			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASSWD -P ui-hotfix-build
+			  USERPASS = "$USER:$PASS"
+			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix
+			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.password=$PASS -P ui-hotfix-build
 		  	  [ -f $WORKSPACE/hotfix/bsro-ui-hotfix*.zip ] && rm bsro-ui-hotfix*.zip
 
 		  	  # Download package
  		  	  FILE=`find . -type f -name "bsro-ui-hotfix*.zip" -printf '%f\n'`
 		  	  if [ ! -f $FILE ]; then
 		    	    echo "curl -u $USERPASS $HOST:HOST_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE"
-		            curl -u $USER_ID:$PASSWD $proto$url:4502/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE
+		            curl -u $USERPASS $HOST:HOST_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$FILE > $FILE
 		            TMP_DATE=`date +%Y-%m-%d_%H-%M-%S`
 		            FILE_NAME=`echo $FILE | sed -e "s/.zip/_$TMP_DATE.zip/"`
-                            cp $FILE $DESTINATION/hotfix/$FILE_NAME
+                            cp $FILE $WORKSPACE/hotfix/$FILE_NAME
                           fi
 
 			  # Install package on publisher
