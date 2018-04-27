@@ -429,10 +429,14 @@ pipeline {
             steps {
                 echo 'Stage 9: Build BSRO docker volumes for AUTH and PUB (4 volumes)'
 		sh '''
+		  # Copy pre-staged Dockerfile.author for author volume image
+		  cp $AUTOMATION_STAGE/Dockerfile.author $DOCKER_AUTHOR_VOLUME_DIR
 		  cd $DOCKER_AUTHOR_VOLUME_DIR
 		  echo "Building author volume image..."
 		  docker build --tag="bsro-ci-prod-arepo-ms" -f Dockerfile.author .
 
+                  # Copy pre-staged Dockerfile.publish for publish volume image
+                  cp $AUTOMATION_STAGE/Dockerfile.publish $DOCKER_PUBLISH_VOLUME_DIR
 		  cd $DOCKER_PUBLISH_VOLUME_DIR
                   echo "Building publish volume image..."
                   docker build --tag="bsro-ci-prod-prepo-ms" -f Dockerfile.publish .
