@@ -23,6 +23,8 @@ pipeline {
 	GLOBAL_PKG_DESTINATION="/mnt/apps/bsro/assets/content/global"
 	DOCKER_IMAGE_NAME="b2o-ci-prod-ep"
 	DOCKER_CONTAINER_NAME="B2O_EP"
+	DOCKER_AUTHOR_VOLUME_DIR="/mnt/data2/dockervolume/workspace"
+        DOCKER_PIUBLISH_VOLUME_DIR="/mnt/data3/dockervolume/workspace"
 	HOST="bsro-tools.icrossing.com"
 	A_PORT="14502"
 	P_PORT="14503"
@@ -32,6 +34,8 @@ pipeline {
 // CONTENT_HOTFIX variables
 	CONTENT_HOTFIX_VERSION="1.1.14_20180502"
 	CONTENT_HOTFIX_PKGNAME="bsro-content-hotfix-$CONTENT_HOTFIX_VERSION"
+
+
 
     }
 /*
@@ -316,7 +320,7 @@ pipeline {
 		  mkdir -p ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault
 		  cp filterUi.xml ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault/filterUiHotfix.xml
 		'''
-		withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS']]) {
+		withCredentials([usernamePassword(credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh '''
 			  USERPASS="$USER:$PASS"
 			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.port=$A_PORT -Dcq.password=$PASS -P ui-hotfix
@@ -326,7 +330,6 @@ pipeline {
 			  curl -u $USERPASS $HOST:$P_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
 			'''
 		}
-***************************************/
 // =========================== CONTENT_HOTFIX =====================
 // Cleanup WORKSPACE
 		deleteDir()
@@ -334,9 +337,9 @@ pipeline {
                              url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
 
 
-		withCredentials([usernamePassword(credentialsId: env.GIT_CREDS, passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+		withCredentials([usernameColonPassword(credentialsId: env.GIT_CREDS, variable: 'USERPASS')]) {
 			sh '''
-			  git fetch --tags https://${GIT_USERNAME}:${GIT_PASSWORD}@git.icrossing.net/web-development/bsro.git
+			  git fetch --tags https://${USERPASS}@git.icrossing.net/web-development/bsro.git
                           git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
 			'''
 
@@ -384,11 +387,39 @@ pipeline {
 
             }
         }
+
+***************************************/
 /* Compact and copy */
 
         stage('Stage 8 (COMPACT_REPO && COPY_REPO): Compact and copy repo') {
             steps {
                 echo 'Stage 8: Compact and copy repo'
+		sh '''
+		  echo "Compacting author repository..."
+		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/help/compact_v1.sh /opt/aem author
+
+		  echo "Compacting publish repository..."
+		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/help/compact_v1.sh /opt/aem publish
+
+		  echo "Copying author launchpad..."
+
+		  # Remove existing author launchpad and reposotory folders, if any
+		  rm -rf $DOCKER_AUTHOR_VOLUME_DIR/author/*
+
+		  docker cp $DOCKER_CONTAINER_NAME:/opt/aem/author/crx-quickstart/launchpad $DOCKER_AUTHOR_VOLUME_DIR/author/launchpad
+		  echo "Copying author repository..."
+		  docker cp $DOCKER_CONTAINER_NAME:/opt/aem/author/crx-quickstart/repository $DOCKER_AUTHOR_VOLUME_DIR/author/repository
+
+		  # Remove existing publish launchpad and reposotory folders, if any
+		  rm -rf $DOCKER_PUBLISH_VOLUME_DIR/publish/*
+
+		  echo "Copying publish launchpad..."
+		  docker cp $DOCKER_CONTAINER_NAME:/opt/aem/publish/crx-quickstart/launchpad $DOCKER_PUBLISH_VOLUME_DIR/publish/launchpad
+
+		  echo "Copying publish repository..."
+		  docker cp $DOCKER_CONTAINER_NAME:/opt/aem/publish/crx-quickstart/repository $DOCKER_PUBLISH_VOLUME_DIR/publish/repository
+
+		'''
             }
         }
 
@@ -397,6 +428,15 @@ pipeline {
         stage('Stage 9 (BUILD-BSRO-AUTHOR-VOLUME && BUILD-BSRO-PUBLISH-VOLUME): Build BSRO docker volumes (4 volumes)') {
             steps {
                 echo 'Stage 9: Build BSRO docker volumes for AUTH and PUB (4 volumes)'
+		sh '''
+		  cd $DOCKER_AUTHOR_VOLUME_DIR
+		  echo "Building author volume image..."
+		  docker build --tag="bsro-ci-prod-arepo-ms" -f Dockerfile.author .
+
+		  cd $DOCKER_PUBLISH_VOLUME_DIR
+                  echo "Building publish volume image..."
+                  docker build --tag="bsro-ci-prod-prepo-ms" -f Dockerfile.publish .
+		'''
             }
         }
 
@@ -405,27 +445,48 @@ pipeline {
         stage('Stage 10 (B2O-MS-IMAGE): Build docker master image: B2O-MS-IMAGE') {
             steps {
                 echo 'Stage 10: Build docker master image: B2O-MS-IMAGE'
+
+		sh '''
+		  echo "Indexing and deleting launchpad/repository from AUTHOR and PUBLISH";
+		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/prep-ms.sh /opt/aem author
+		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/prep-ms.sh /opt/aem publish
+
+		  echo "Exporting container to TAR format"
+		  EXPORT_TAR_DIR="/mnt/data2/dockervolume/workspace"
+
+		  #Remove any existing export tar files
+		  rm -rf $EXPORT_TAR_DIR/b2o-ci-prod-master-ms.tar
+
+		  docker export -o $EXPORT_TAR_DIR/b2o-ci-prod-master-ms.tar $DOCKER_CONTAINER_NAME
+
+		  echo "Importing image (TAR) to local repo --begin"
+
+		  cat $EXPORT_DIR/b2o-ci-prod-master-ms.tar | docker import -  b2o-ci-prod-master-ms:latest
+
+		  docker stop $DOCKER_CONTAINER_NAME
+		  docker rm -f $DOCKER_CONTAINER_NAME
+		'''
             }
         }
     }
     post {
         always {
-            echo 'One way or another, I have finished'
+            echo 'Pipeline finished'
 // Cleanup workspace
 //            deleteDir() 
 
         }
         success {
-            echo 'I succeeeded!'
+            echo 'Succeeeded!'
         }
         unstable {
-            echo 'I am unstable :/'
+            echo 'Unstable :/'
         }
         failure {
-            echo 'I failed :('
+            echo 'Failed :('
         }
         changed {
-            echo 'Things were different before...'
+            echo 'Changes were made to the pipeline...'
         }
     }
 }
