@@ -1,0 +1,42 @@
+version: "3.4"
+
+services:
+
+  author:
+    image: bato-ci-lite-arepo63-ms
+    volumes:
+      - a-vol-repo:/opt/aem/author/crx-quickstart/repository
+      - a-vol-launchpad:/opt/aem/author/crx-quickstart/launchpad
+    command: /bin/true 
+
+  publish:
+    image: bato-ci-lite-prepo63-ms
+    volumes:
+      - p-vol-repo:/opt/aem/publish/crx-quickstart/repository
+      - p-vol-launchpad:/opt/aem/publish/crx-quickstart/launchpad
+    command: /bin/true 
+
+  aem:
+    image: b2o-ci-prod-master-ms63
+    command: /opt/aem/run-bsro.sh
+    extra_hosts:
+      - "shop-fcac-bsro-pr.firestonecompleteautocare.com:63.137.180.2"
+    ports:
+     - "4502-4503:4502-4503"
+     - "8080:8080"
+     - "81:80"
+     - "71:71"
+    volumes:
+      - a-vol-repo:/opt/aem/author/crx-quickstart/repository
+      - a-vol-launchpad:/opt/aem/author/crx-quickstart/launchpad
+      - p-vol-repo:/opt/aem/publish/crx-quickstart/repository
+      - p-vol-launchpad:/opt/aem/publish/crx-quickstart/launchpad
+    depends_on:
+      - author
+      - publish
+
+volumes:
+  a-vol-repo:
+  a-vol-launchpad:
+  p-vol-repo:
+  p-vol-launchpad:

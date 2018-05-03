@@ -1,17 +1,19 @@
 pipeline {
     agent any
     environment { 
-        PROJECT_NAME="BSRO"
+        PROJECT_NAME="BATO"
 
 // Update maven and credentials if needed
         MVN_HOME="/var/lib/apache-maven-3.3.9"
 	AEM_ADMIN_CREDS="37af17ae-ef7a-48d1-be68-53139418b3d9"
 	GIT_CREDS="f493b70e-1d29-4096-8167-caedb0cc686b"
+	BATO_GIT_CREDS="13bc238a-8b92-4409-adc4-8941b4a42a48"
 
 // Stage dirs
         MS_WAR_STAGE="/opt/projects/bsro-builds/bsro-releases/b2o-ci-prod-ep/assets/microservices"
 	AUTOMATION_STAGE="/opt/projects/bsro/automation"
 
+	BATO_BRANCH="AEM6.3-Implementation"
         MICROSERV_BRANCH="DEV_MICROSERV_THAC"
         ADMIN_BRANCH="ADMIN_DEV"
 	EC_BRANCH="DEV_OSGI"
@@ -52,6 +54,7 @@ pipeline {
 */
 
     stages {
+/******************************
         stage('Stage 1: Build Microservices') {
             steps {
                 git branch: env.MICROSERV_BRANCH, credentialsId: env.GIT_CREDS,
@@ -145,7 +148,7 @@ pipeline {
 
 		  cp -r $MS_WAR_STAGE $WORKSPACE/b2o-ci-prod-ep/assets/
 		  cd $WORKSPACE/b2o-ci-prod-ep
-		  docker build --tag="$DOCKER_IMAGE_NAME" -f Dockerfile.local .
+		  docker build --tag="$DOCKER_IMAGE_NAME" -f Dockerfile.63sp1 .
 		  
 		  CONTAINER_ID=`docker run --name $DOCKER_CONTAINER_NAME -i -d -p 4502-4503:4502-4503 -p 8080:8080 -p 81:80 -p 71:71 --add-host shop-bsro-fcac-pr.firestonecompleteautocare.com:63.137.180.2 $DOCKER_IMAGE_NAME`
 		  sleep 60
@@ -161,7 +164,7 @@ pipeline {
 			withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
     			  sh '''
 			  set +x
-			  $AUTOMATION_STAGE/beam_packages_author_v2.sh
+			  $AUTOMATION_STAGE/beam_packages_a_bato.sh
     			  '''
 			}
 		  },
@@ -169,175 +172,17 @@ pipeline {
                         withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
                           sh '''
                           set +x
-                          $AUTOMATION_STAGE/beam_packages_publish_v2.sh
+                          $AUTOMATION_STAGE/beam_packages_p_bato.sh
                           '''
                         }
 		  }
 		)
             }
         }
-        stage('Stage 7: Install UI HotFix package') {
-            steps {
-                deleteDir()
-                git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
-                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-
-		sh '''
-		  mkdir $WORKSPACE/hotfix
-    		  git archive --output=hotfix/hotfix.zip HEAD $(git fetch && git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep -v 'sem/'  | grep -v '/content/bsro/' | grep -v 'fonts/')
-    		  cd hotfix
-    		  unzip hotfix.zip
-    		  cp $WORKSPACE/AEM_Components/pom.xml $WORKSPACE/hotfix/AEM_Components
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/pom-hotfix.xml $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui
-
-    		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib
-		  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-    		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/js/main.js $HOTFIX_DIR/js/main.js
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/css/main.css $HOTFIX_DIR/css/main.css
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/voice-fcac/clientlib/*.txt $HOTFIX_DIR 
-    
-    
-		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib
-              	  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-    
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/*.txt $HOTFIX_DIR
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/css/main.css $HOTFIX_DIR/css/main.css
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/fcac/clientlib/js/main.js $HOTFIX_DIR/js/main.js
-    
-		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib
-		  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-    
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/*.txt $HOTFIX_DIR
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/js/main.js $HOTFIX_DIR/js/main.js
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/hibdontire/clientlib/css/main.css $HOTFIX_DIR/css/main.css
-    
-		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib
-		  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/*.txt $HOTFIX_DIR
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/js/main.js $HOTFIX_DIR/js/main.js
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/tiresplus/clientlib/css/main.css $HOTFIX_DIR/css/main.css
-    
-		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib
-		  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/*.txt $HOTFIX_DIR
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/js/main.js $HOTFIX_DIR/js/main.js
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/wheelworks/clientlib/css/main.css $HOTFIX_DIR/css/main.css
-    
-		  HOTFIX_DIR=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib
-		  mkdir -p $HOTFIX_DIR/css
-		  mkdir -p $HOTFIX_DIR/js
-		  cp -R $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/* $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro
-    
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/*.txt $HOTFIX_DIR
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/js/base.js $HOTFIX_DIR/js/base.js
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/global.css $HOTFIX_DIR/css/global.css
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/retrofit.css $HOTFIX_DIR/css/retrofit.css
-		  cp $WORKSPACE/AEM_Components/bsro-aem-ui/src/main/content/jcr_root/etc/designs/bsro/bsro/clientlib/css/styles.css $HOTFIX_DIR/css/styles.css
-		'''
-		withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
-			sh '''
-
-			  JCR_ROOT=$WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/src/main/content/jcr_root
-			  aemsync -t http://$USERPASS@$HOST:$A_PORT -w $JCR_ROOT &
-			  sleep 30
-			  kill $(ps -aux | grep "[a]emsync" | awk '{print $2}')
-
-			'''
-		}
-		sh '''
-		  cd $WORKSPACE/hotfix
-
-		  find . -type f -name ".content.xml" -print -exec touch '{}' +
-
-		  groovy $AUTOMATION_STAGE/workspaceFilter.groovy
-		  mkdir -p ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault
-		  cp filterUi.xml ./AEM_Components/bsro-aem-ui/src/main/content/META-INF/vault/filterUiHotfix.xml
-		'''
-		withCredentials([usernamePassword(credentialsId: env.AEM_ADMIN_CREDS, usernameVariable: 'USER', passwordVariable: 'PASS')]) {
-                        sh '''
-			  USERPASS="$USER:$PASS"
-			  $MVN_HOME/bin/mvn -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml clean package install -DDATE=$DATE -Dcq.host=$HOST -Dcq.port=$A_PORT -Dcq.password=$PASS -P ui-hotfix
-			  $MVN_HOME/bin/mvn content-package:build -f $WORKSPACE/hotfix/AEM_Components/bsro-aem-ui/pom-hotfix.xml -DDATE=$DATE -Dcq.host=$HOST -Dcq.port=$A_PORT -Dcq.password=$PASS -P ui-hotfix-build
- 		  	  HOTFIX_FILE=`find . -type f -name "bsro-ui-hotfix*.zip" | grep target`
-			  # Install package on publisher
-			  curl -u $USERPASS $HOST:$P_PORT/crx/packmgr/service.jsp -F file=@"$HOTFIX_FILE" -F name="bsro-aem-ui-hotfix" -F force=true -F install=true  
-			'''
-		}
-	    }
-	}
-	stage('Stage 8: Install Content Hotfix package') {
-            steps {
-		deleteDir()
-                git branch: env.UI_BRANCH, credentialsId: env.GIT_CREDS,
-                             url: 'https://inesvit@git.icrossing.net/web-development/bsro.git'
-
-
-		withCredentials([usernameColonPassword(credentialsId: env.GIT_CREDS, variable: 'USERPASS')]) {
-			sh '''
-			  git fetch --tags https://${USERPASS}@git.icrossing.net/web-development/bsro.git
-                          git diff --name-only --diff-filter=d $LAST_COMMIT HEAD | grep "content/bsro/" | sed "s/AEM_Components\\/bsro-aem-ui\\/src\\/main\\/content\\/jcr_root//g" | sed "s/\\/.content\\.xml//g" > filter.txt
-			'''
-
-    		}
-		withCredentials([usernameColonPassword(credentialsId: env.AEM_ADMIN_CREDS, variable: 'USERPASS')]) {
-
-			sh '''
-			  set +x
-			  cd $WORKSPACE
-			  if [ -s filter.txt ]
-		    	    then
-			    # Create a package
-  			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME?cmd=create -d packageName=$CONTENT_HOTFIX_PKGNAME -d groupName=bsro_hotfix
-  
-			    # Update Package
-			    FJSON="[\"
-			      while read line
-  				do
-				FJSON=$FJSON"{'root':'$line', 'rules':[{'modifier':'include', 'pattern':'$line(\\.*)'}]},"
-				done < filter.txt
-			    FJSON=$FJSON"]"
-
-			    echo $FJSON > output.txt
-  
-  			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/update.jsp \
-							    -F path=/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME \
-							    -F packageName=$CONTENT_HOTFIX_PKGNAME \
-							    -F groupName=bsro_hotfix \
-							    -F filter=@output.txt \
-							    -F _charset_=UTF-
-
-			    # Build Package
-			    curl -u $USERPASS -X POST http://$HOST:$A_PORT/crx/packmgr/service/.json/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME.zip?cmd=build
-  
-			    # Download Package
-			    curl -u $USERPASS http://$HOST:$A_PORT/crx/packmgr/download.jsp?path=/etc/packages/bsro_hotfix/$CONTENT_HOTFIX_PKGNAME.zip > $CONTENT_HOTFIX_PKGNAME.zip
-  
-			    # Upload & Install package to publish
-			    curl -u $USERPASS -F file=@"$CONTENT_HOTFIX_PKGNAME.zip" -F name="bsro_hotfix" -F force=true -F install=true http://$HOST:$P_PORT/crx/packmgr/service.jsp
-			  else
-  			    echo "Filter file is empty, No content update for now !!!"
-			  fi
-			'''
-		}
-
-            }
-        }
-        stage('Stage 9: Compact and copy repo') {
+**********************/
+        stage('Stage 7: Copy repo') {
             steps {
 		sh '''
-		  echo "Compacting author repository..."
-		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/help/compact_v1.sh /opt/aem author
-
-		  echo "Compacting publish repository..."
-		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/help/compact_v1.sh /opt/aem publish
-
 		  echo "Copying author launchpad..."
 
 		  # Remove existing author launchpad and reposotory folders, if any
@@ -359,7 +204,7 @@ pipeline {
 		'''
             }
         }
-        stage('Stage 10: Build BSRO docker volumes for AUTH and PUB') {
+        stage('Stage 8: Build BSRO docker volumes for AUTH and PUB') {
             steps {
                 parallel(
                   author: {
@@ -368,7 +213,7 @@ pipeline {
                       cp $AUTOMATION_STAGE/Dockerfile.author $DOCKER_AUTHOR_VOLUME_DIR
                       cd $DOCKER_AUTHOR_VOLUME_DIR
                       echo "Building author volume image..."
-                      docker build --tag="bsro-ci-prod-arepo-ms" -f Dockerfile.author .
+                      docker build --tag="bato-ci-lite-arepo63-ms" -f Dockerfile.author .
 		    '''
                   },
                   publish: {
@@ -377,13 +222,25 @@ pipeline {
                       cp $AUTOMATION_STAGE/Dockerfile.publish $DOCKER_PUBLISH_VOLUME_DIR
                       cd $DOCKER_PUBLISH_VOLUME_DIR
                       echo "Building publish volume image..."
-                      docker build --tag="bsro-ci-prod-prepo-ms" -f Dockerfile.publish .
+                      docker build --tag="bato-ci-lite-prepo63-ms" -f Dockerfile.publish .
 		    '''
                   }
 		)
 	    }
 	}
-        stage('Stage 11: Build docker master image') {
+
+/*********************
+        stage('Stage 9: BST-FST-MASTER') {
+            steps {
+                deleteDir()
+                git branch: env.BATO_BRANCH, credentialsId: env.BATO_GIT_CREDS,
+                     url: 'https://iCrossingBATONotifications@github.com/Razorfish-East/BATO.git'
+                sh '''
+		'''
+	    }
+	}
+*************************/
+        stage('Stage 10: Build docker master image') {
             steps {
 		sh '''
 		  echo "Indexing and deleting launchpad/repository from AUTHOR and PUBLISH";
@@ -391,30 +248,30 @@ pipeline {
 		  docker exec -i $DOCKER_CONTAINER_NAME /opt/aem/prep-ms.sh /opt/aem publish
 
 		  #Remove any existing export tar files
-		  rm -rf $EXPORT_TAR_DIR/b2o-ci-prod-master-ms.tar
+		  rm -rf $EXPORT_TAR_DIR/b2o-ci-prod-master-ms63.tar
 
-		  docker export -o $EXPORT_TAR_DIR/b2o-ci-prod-master-ms.tar $DOCKER_CONTAINER_NAME
+		  docker export -o $EXPORT_TAR_DIR/b2o-ci-prod-master-ms63.tar $DOCKER_CONTAINER_NAME
 
 		  echo "Importing image (TAR) to local repo --begin"
 
-		  cat $EXPORT_TAR_DIR/b2o-ci-prod-master-ms.tar | docker import -  b2o-ci-prod-master-ms:latest
+		  cat $EXPORT_TAR_DIR/b2o-ci-prod-master-ms63.tar | docker import -  b2o-ci-prod-master-ms63:latest
 
 		  docker stop $DOCKER_CONTAINER_NAME
 		  docker rm -f $DOCKER_CONTAINER_NAME
 		'''
             }
         }
-/**************************
-        stage('Stage 12: Bring up docker container and create volumes') {
+/*****************
+        stage('Stage 11: Bring up docker container and create volumes') {
             steps {
 		  sh '''
 		    PATH=$PATH:/usr/local/bin
 		    export COMPOSE_HTTP_TIMEOUT=3600
-		    docker-compose -f $AUTOMATION_STAGE/docker-compose-local.yml up -d
+		    docker-compose -f $AUTOMATION_STAGE/docker-compose-bato.yml up -d
 		  '''
 	    }
 	}
-        stage('Stage 13: Run Smoke Test') {
+        stage('Stage 12: Run Smoke Test') {
             steps {
                 echo 'Stage 13: Fire up tests against all the sites'
 		sh '''
@@ -462,7 +319,7 @@ pipeline {
                 echo 'Stage 14: Push a newly built docker image to the repository'
             }
         }
-**************************/
+**************/
     }
     post {
         always {

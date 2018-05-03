@@ -1,0 +1,19 @@
+https://www.howtoforge.com/tutorial/how-to-setup-zsh-and-oh-my-zsh-on-linux/
+
+1. Install zsh
+  sudo yum install zsh
+  chsh -s /bin/zsh 
+  --> re-login
+2. Install oh-my-zsh framework
+  wget https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh -O - | zsh
+3. Install powerline theme
+  git clone https://github.com/bhilburn/powerlevel9k.git ~/.oh-my-zsh/custom/themes/powerlevel9k
+
+  You then need to select this theme in your ~/.zshrc:
+
+  ZSH_THEME="powerlevel9k/powerlevel9k"
+4. For Putty install powerline fonts
+  https://github.com/powerline/fonts
+  DejaVuSansMono
+
+5. use .zshrc from my repo
