@@ -1,0 +1,10 @@
+---
+- hosts: bsro
+
+  tasks:
+
+    - name: Get docker image list
+      shell: docker images
+      register: out
+
+    - debug: var=out.stdout_lines
