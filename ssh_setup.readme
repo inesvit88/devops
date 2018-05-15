@@ -1,0 +1,17 @@
+==> setup git with ssh
+1. Generate a key pair
+
+ssh-keygen -t rsa -b 4096 -C "inesvit@gmail.com" -f github_key
+
+# -C is a label in your key (the last record in the .pub file) used to authorize your account in github
+
+2. Add pub key to www.github.com account
+
+3. Test the connection with the key
+
+ssh -i ./github_key -T git@github.com
+
+4. Clone repo
+
+ ssh-agent bash -c 'ssh-add /home/inesvit/repo_ssh/github_key; git clone git@github.com:inesvit88/devops.git'
+
