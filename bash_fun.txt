@@ -1,0 +1,2 @@
+# Change color to red
+echo -en "\033[0;31m "; cat t2.txt
