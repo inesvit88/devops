@@ -22,5 +22,9 @@ _start:
 	mov eax,1            ; 'exit' system call = 1 (sys_exit)
 	mov ebx,0            ; exit with error code 0
 	int 80h              ; call the kernel, software interrupt 'int 0x80'. After each syscall, an integer is returned in %eax.
+
+; int 19h
+	mov eax,88
+	int 80h
 ; INT is an assembly language instruction for x86 processors that generates a software interrupt. It takes the interrupt number formatted as a byte value
 
