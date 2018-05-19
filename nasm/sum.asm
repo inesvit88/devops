@@ -1,5 +1,5 @@
 section .data
-    msg db      "AAAA", 4 ; data, --bytes
+    msg db      'AAAA','BBBB' 
 
 section .text
     global _start
@@ -12,9 +12,9 @@ section .text
 
 _start:
     mov     rax, 1 ; x86_64 ABI: sys_write
-    mov     rdi, -1 ; x86_64 ABI: 1 - stdout 
+    mov     rdi, 1 ; x86_64 ABI: 1 - stdout 
     mov     rsi, msg
-    mov     rdx, 4
+    mov     rdx, 4 
     syscall
 
     mov    rax, 60
