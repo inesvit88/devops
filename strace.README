@@ -1,0 +1,15 @@
+1. Trace network calls
+starce -f -e trace=network <cmd> 2>&1 | grep 'this\|that'
+
+example 1: Get the local and peer socket:
+
+strace -f -e trace=network curl www.google.com 2>&1 | grep 'sockname\|peer'
+
+[pid  4387] getsockname(3,  {sa_family=AF_NETLINK, nl_pid=4386, nl_groups=00000000}, [12]) = 0
+ [pid  4387] getsockname(3, {sa_family=AF_INET, sin_port=htons(59070), sin_addr=inet_addr("10.0.1.77")}, [28->16]) = 0
+getpeername(3, {sa_family=AF_INET, sin_port=htons(80), sin_addr=inet_addr("172.217.7.196")}, [128->16]) = 0
+getsockname(3, {sa_family=AF_INET, sin_port=htons(60098), sin_addr=inet_addr("10.0.1.77")}, [128->16]) = 0
+
+
+strace wget -O /dev/null "www.google.com" 2>& | grep 'this\|that'
+

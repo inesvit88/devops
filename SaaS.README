@@ -1,0 +1,6 @@
+1. Manage Saas with https://www.replicated.com/
+
+2. Docker tip: Don't rely on ":latest" tag, it means *absolutely nothing*. Just tag your builds every time with version: myrepo/myimage:1.x 
+
+(good read on it: https://medium.com/@mccode/the-misunderstood-docker-tag-latest-af3babfd6375)
+
