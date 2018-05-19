@@ -1,7 +1,8 @@
 section .data
-    msg db      'AAAA','BBBB' 
+    msg db	'AAAA','BBBB',10 ; line feed ACII HEX:(0x0A) or ASCII decimal: 10
+    len equ	$-msg
 
-section .text
+;section .text
     global _start
 
 
@@ -11,10 +12,10 @@ section .text
 
 
 _start:
-    mov     rax, 1 ; x86_64 ABI: sys_write
-    mov     rdi, 1 ; x86_64 ABI: 1 - stdout 
-    mov     rsi, msg
-    mov     rdx, 4 
+    mov     rax, 1 ; x86_64 ABI: sys_write	RAX - ACCUMULATOR
+    mov     rdi, 1 ; x86_64 ABI: 1 - stdout 	RDI - DESTINATION
+    mov     rsi, msg ;				RSI - SOURCE
+    mov     rdx, len ;				RDX - DATA (length of the string) 
     syscall
 
     mov    rax, 60
