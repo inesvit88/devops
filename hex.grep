@@ -1,0 +1,1 @@
+grep "^[0-9a-flo]*$" /usr/share/dict/words |   tr lo 10 | awk '{print length, $0}' |   sort -n | cut -f2- -d' ' | tail -10

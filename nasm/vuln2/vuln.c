@@ -2,9 +2,6 @@
 #include <string.h>
 
 int main (int argc, char** argv){
-
-  char buffer[500];
-  strcpy(buffer, argv[1]);
-
+  int a = 5;
   return 0;
 }
