@@ -15,6 +15,10 @@ _start:
 
 	xor rdx, rdx
 	mov rdx, 0xbadbabe1
+	mov rcx, 0xbadbabe2
+	
+	mov [rbp-0x10], rdx
+	mov [rbp-0x18], rcx
 
 	mov     rax, 60	; sys_exit   
 	mov	rdi, 0	; retcode 0
