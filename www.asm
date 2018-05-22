@@ -1,3 +1,5 @@
+; https://sourceware.org/gdb/onlinedocs/gdb/Memory.html
+
 section .data
 
 msg db      'w','w' ; w hex - 77, makes it easier to find in memory
