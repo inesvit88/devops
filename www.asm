@@ -31,6 +31,6 @@ _start:
 	syscall
 _post:
         mov     rax, 60 ; sys_exit
-        mov     rdi, 0 ; retcode is the sum of numbers
+        mov     rdi, 0 
         syscall
 	ret
