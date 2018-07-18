@@ -1,0 +1,11 @@
+# https://elinux.org/RPi_Resize_Flash_Partitions
+
+$ parted /dev/mmblk0
+(parted) unit chs print
+(parted) rm 2
+(parted) mkpart primary 61,2,9 121941,63,31   ; start and end chs(cylinder head sector) 
+(parted) quit
+$ sudo resize2fs /dev/mmblk0p2
+$ df -hT .
+
+Notes: rm 2 will NOT remove the data, choose Ignore options, always good to take a backup
