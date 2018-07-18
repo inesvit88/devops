@@ -1,5 +1,4 @@
-#FROM ubuntu:18.10 
-FROM testautomation-ms:1.2
+FROM ubuntu:18.10 
 
 RUN apt update -y \
  && apt install -y python3 python3-pip netcat vim
