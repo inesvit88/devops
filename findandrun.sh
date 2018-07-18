@@ -19,3 +19,5 @@ else
   echo "[!] ERROR: No python3 found, check your path or install python3: sudo yum install python3"
   exit 1
 fi
+
+#===> RULE N PA3:  Always choose *SHORTEST* alternative (command, type, hash)
