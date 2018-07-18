@@ -1,0 +1,18 @@
+1. build master image
+
+docker build -t testautomation-ms:1.3 .
+
+2. run selenium-hub.grid
+
+docker network create grid
+docker run -d -p 4444:4444 --net grid --name selenium-hub selenium/hub:3.13.0-argon
+docker run -d --net grid -e HUB_HOST=selenium-hub -v /dev/shm:/dev/shm selenium/node-chrome:3.13.0-argon
+
+3. run pysmoketest and exec a simple script to test the page title
+
+docker run -itd --name pysmoketest --net grid testautomation-ms:1.3
+docker exec -ti pysmoketest /usr/bin/python3 /opt/pytest/google_conn.py
+
+
+# If all goes well, congrats!
+
