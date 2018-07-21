@@ -24,7 +24,7 @@
 #
 #
 #
-# [>] find won't work for now as it never gets its turn to run, bc/ of failed shadows cat. 
+# [>] find won't work for now as it never gets its turn to run, bc/ of failed shadow cat. 
 #     have to revisit logic of failing commands
 
 cd /dev/shm && export SCORE="$SCORE 1" \

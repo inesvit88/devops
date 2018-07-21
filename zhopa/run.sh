@@ -41,6 +41,10 @@ recon(){
   rrv_expr=$(echo $rr_vector | tr ' ' '+')
   score=$(python3 -c "print($rrv_expr)")
   echo "[.] target score ==> $score"
+  if [ $score == "8" ];
+    then
+      300baud "[.] Dang....most likely no Internet connectivity" 
+  fi
 }
 
 300baud "[+] Starting remote code execution... on $RHOSTS"
