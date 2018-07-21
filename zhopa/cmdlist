@@ -24,6 +24,8 @@
 #
 #
 #
+# [>] find won't work for now as it never gets its turn to run, bc/ of failed shadows cat. 
+#     have to revisit logic of failing commands
 
 cd /dev/shm && export SCORE="$SCORE 1" \
   && touch f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
@@ -35,7 +37,6 @@ cd /dev/shm && export SCORE="$SCORE 1" \
   && arp -n >>f &&  export SCORE="$SCORE 3" > /dev/null 2>&1 \
   && cat /etc/shadow >>f 2>&1 && export SCORE="$SCORE 10" > /dev/null 2>&1 \
   && nc localhost 22 -e ps >>f && export SCORE="$SCORE 7" > /dev/null 2>&1 \
-  && find /dev/shm -exec ls -al {} \; >>f && export SCORE="$SCORE 7" > /dev/null 2>&1 \
+  && find /dev/shm -exec date \; && SCORE="$SCORE 7" \
 
-cat f
 echo "resultvector $SCORE"
