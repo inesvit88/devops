@@ -36,7 +36,7 @@ netscan(){
 
 recon(){
   echo "[*] running recon and score against the rhost $1"
-  rr_vector=$(ssh -q -t $1 < $2 | tail -1) 
+  rr_vector=$(ssh -q -t $1 < $2 | grep finalscore | sed -e 's/^\w*\ *//') 
   echo "[.] recon results vector obtained => [$rr_vector]"
   rrv_expr=$(echo $rr_vector | tr ' ' '+')
   score=$(python3 -c "print($rrv_expr)")

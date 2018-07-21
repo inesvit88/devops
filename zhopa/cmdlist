@@ -25,15 +25,15 @@
 
 cd /dev/shm && export SCORE="$SCORE 1" \
   && touch f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
-  && date >> f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
-  && uptime >> f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
-  && whoami >> f && export SCORE="$SCORE 2" > /dev/null 2>&1 \
-  && ip a >> f && export SCORE="$SCORE 2" > /dev/null 2>&1 \
+  && date >>f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
+  && uptime >>f && export SCORE="$SCORE 1" > /dev/null 2>&1 \
+  && whoami >>f && export SCORE="$SCORE 2" > /dev/null 2>&1 \
+  && ip a >>f && export SCORE="$SCORE 2" > /dev/null 2>&1 \
   && ping -c 1 8.8.8.8 >> f && export SCORE="$SCORE 5" > /dev/null 2>&1 \
-  && arp -n >> f &&  export SCORE="$SCORE 3" > /dev/null 2>&1 \
-  && cat /etc/shadow >> f &&  export SCORE="$SCORE 10" > /dev/null 2>&1 \
-  && nc localhost 22 -e ps >> f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
-  && find -name f -exec ps \; >> f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
+  && arp -n >>f &&  export SCORE="$SCORE 3" > /dev/null 2>&1 \
+  && cat /etc/shadow >>f 2>&1 &&  export SCORE="$SCORE 10" > /dev/null 2>&1 \
+  && nc localhost 22 -e ps >>f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
+  && find -name f -exec ps \; >>f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
 
 cat f
-echo "$SCORE"
+echo "resultvector $SCORE"
