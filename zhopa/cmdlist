@@ -1,6 +1,6 @@
 # ----------------------------------------
 # gain a score of:
-#		10 - high 
+#		>=10 - high 
 #		>=5 - medium
 #		<5 - low
 # ----------------------------------------
@@ -19,11 +19,10 @@
 
 cd /dev/shm && export SCORE="$SCORE 1" \
   && uptime && export SCORE="$SCORE 1" > /dev/null 2>&1 \
-  && date && export SCORE=$SCORE "1" > /dev/null 2>&1 \
-  && whoami && export SCORE=$SCORE "2" > /dev/null 2>&1 \
-  && ip a && export SCORE=$SCORE "2" > /dev/null 2>&1 \
-  && ping -c 1 8.8.8.8 && export SCORE=$SCORE "5" > /dev/null 2>&1 \
-  && arp -n &&  export SCORE=$SCORE "3" > /dev/null 2>&1
-
+  && date && export SCORE="$SCORE 1" > /dev/null 2>&1 \
+  && whoami && export SCORE="$SCORE 2" > /dev/null 2>&1 \
+  && ip a && export SCORE="$SCORE 2" > /dev/null 2>&1 \
+  && ping -c 1 8.8.8.8 && export SCORE="$SCORE 5" > /dev/null 2>&1 \
+  && arp -n &&  export SCORE="$SCORE 3" > /dev/null 2>&1
 
 echo $SCORE
