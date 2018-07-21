@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+
 : ${2?"Usage: $0 RHOSTS CMDFILE"}
 
 RHOSTS=$1
