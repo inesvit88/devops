@@ -3,22 +3,24 @@
 #		>=10	highly hackable 
 #		>=5	medium (eeh...)
 #		<5	low t(-_-) u
-# +-------------------------------------+
-# ! table of scores per cmd		!
-# +-----------------------------+-------+
-# ! cd /dev/shm			!  1	!
-# ! touch f			!  1	!
-# ! uptime 			!  1	!
-# ! whoami			!  2	!
-# ! ip a			!  2	!
-# ! ping -c 1 8.8.8.8           !  5	!
-# ! arp -n			!  3	!
-# ! cat /etc/shadow             !  10   !
-# ! nc localhost 22 -e ps	!  7    ! /bin/bash
-# ! find -name f -exec ps \;	!  7    ! /bin/bash 
-# !
-# !
-# !
+# on commands less then 32 chars
+# +-------------------------------------+-------+
+# ! table of scores per cmd		!	!
+# +-------------------------------------+-------+
+# ! cd /dev/shm				!  1	!
+# ! touch f				!  1	!
+# ! date				!  1	!
+# ! uptime 				!  1	!
+# ! whoami				!  2	!
+# ! ip a				!  2	!
+# ! ping -c 1 8.8.8.8           	!  5	!
+# ! arp -n				!  3	!
+# ! cat /etc/shadow             	!  10   !
+# ! nc localhost 22 -e ps		!  7    ! /bin/bash
+# ! find /dev/shm -exec ls -al {} \;	!  7    ! /bin/bash 
+# !					!	!
+# !					!	!
+# +-------------------------------------+-------+
 #
 #
 #
@@ -31,9 +33,9 @@ cd /dev/shm && export SCORE="$SCORE 1" \
   && ip a >>f && export SCORE="$SCORE 2" > /dev/null 2>&1 \
   && ping -c 1 8.8.8.8 >> f && export SCORE="$SCORE 5" > /dev/null 2>&1 \
   && arp -n >>f &&  export SCORE="$SCORE 3" > /dev/null 2>&1 \
-  && cat /etc/shadow >>f 2>&1 &&  export SCORE="$SCORE 10" > /dev/null 2>&1 \
-  && nc localhost 22 -e ps >>f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
-  && find -name f -exec ps \; >>f &&  export SCORE="$SCORE 7" > /dev/null 2>&1 \
+  && cat /etc/shadow >>f 2>&1 && export SCORE="$SCORE 10" > /dev/null 2>&1 \
+  && nc localhost 22 -e ps >>f && export SCORE="$SCORE 7" > /dev/null 2>&1 \
+  && find /dev/shm -exec ls -al {} \; >>f && export SCORE="$SCORE 7" > /dev/null 2>&1 \
 
 cat f
 echo "resultvector $SCORE"
