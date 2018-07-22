@@ -1,9 +1,31 @@
 #!/bin/bash
 
-: ${2?"Usage: $0 RHOSTS CMDFILE"}
+#set -x
 
-RHOSTS=$1
+: ${2?"[..Discover/recon and score own network. ARGV: <network interface> <file with scoring commands>..] Usage: $0 IFNAME CMDFILE"}
+
+#RHOSTS=$1
+IFNAME=$1
 CMDFILE=$2
+
+zaspinner()
+{
+  local pid=$1
+  local delay=0.1
+  local spinstr='|/-\'
+  while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    local temp=${spinstr#?}
+    printf " [%c]  " "$spinstr"
+    local spinstr=$temp${spinstr%"$temp"}
+    sleep $delay
+    printf "\b\b\b\b\b\b"
+  done
+  printf "    \b\b\b\b"
+}
+
+grep_ips_from_file(){
+  sed -n 's/\([0-9]\{1,3\}\.\)\{3\}[0-9]\{1,3\}/\nchop&\n/gp' $1 | grep chop | tr -d 'chop' | sort -u
+}
 
 300baud(){
   str=$1
@@ -18,7 +40,7 @@ showoff(){
 echo -e "\
 ____ ____ ____ ____ _  _    _  _    ____ ____ ____ ____ ____    
 |__/ |___ |    |  | |\ |    |\ |    [__  |    |  | |__/ |___    
-|  \ |___ |___ |__| | \|    | \|    ___] |___ |__| |  \ |___\x0a"
+|  \ |___ |___ |__| | \|    | \|    ___] |___ |__| |  \ |___ ===> BY IFNAME \x0a"
 
 }
 
@@ -29,14 +51,21 @@ print_scoring_matrix(){
     sleep .03
   done
 }
-
+network_CIDR(){
+  ip a s $1 | sed -nE '/^\s*inet\b/ s/^\s*inet\s*(([0-9]+\.){3})[0-9]+(\S+).*/\10\3/p'
+}
 netscan(){
-  300baud "[.] scan the network for port 22"
+  NETWORK=$( network_CIDR $1 )
+  300baud "[*] scaning the network $NETWORK for port 22..."
+  nmap -sC -sV -n -p 22 -q -oA nmap/init $NETWORK > /dev/null 2>&1 &
+  echo -n "[.] get to da chOppA!!! ==> "; zaspinner $!
+  grepips nmap/*
+  exit 1
 }
 
 recon(){
   echo "[*] running recon and score against the rhost $1"
-  rr_vector=$(ssh -q -t $1 < $2 | grep resultvector | sed -e 's/^\w*\ *//') 
+  rr_vector=$(ssh -q -t $1 < $2 | tee -a results | grep resultvector | sed -e 's/^\w*\ *//') 
   echo "[.] recon results vector obtained => [$rr_vector]"
   rrv_expr=$(echo $rr_vector | tr ' ' '+')
   score=$(python3 -c "print($rrv_expr)")
@@ -47,8 +76,8 @@ recon(){
   fi
 }
 
-300baud "[+] Starting remote code execution... on $RHOSTS"
-netscan
+netscan $IFNAME
 showoff
 print_scoring_matrix $CMDFILE
+300baud "[+] Starting remote code execution..."
 recon $RHOSTS $CMDFILE
