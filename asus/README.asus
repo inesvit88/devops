@@ -1,0 +1,8 @@
+
+sudo apt-get install git dkms
+git clone https://github.com/nazar-pc/RTL8814AU.git
+# Just in case I cloned it 
+cd RTL8814AU
+sudo ./dkms-install.sh
+sudo modprobe rtl8814au
+
