@@ -1,0 +1,25 @@
+Install
+-------
+
+1. Add Debian repo and add a key
+
+echo 'deb http://download.opensuse.org/repositories/hardware:/razer/Debian_9.0/ /' > /etc/apt/sources.list.d/hardware:razer.list
+
+wget -nv https://download.opensuse.org/repositories/hardware:razer/Debian_9.0/Release.key -O Release.key
+sudo apt add - < Release.key
+sudo apt update
+
+2. Install
+sudo apt install openrazer-meta
+
+3. Get fun scripts to run:
+
+https://github.com/openrazer/openrazer/blob/master/examples/basic_effect.py
+
+
+4. Install polychromatic gnome front end
+
+echo "deb http://ppa.launchpad.net/polychromatic/stable/ubuntu xenial main" | sudo tee -a /etc/apt/sources.list.d/polychromatic.list
+sudo apt-key adv --recv-key --keyserver keyserver.ubuntu.com 96B9CD7C22E2C8C5
+sudo apt update
+sudo apt install polychromatic
