@@ -1,6 +1,8 @@
+import os
 import random
 import colorsys
 from time import sleep
+from multiprocessing import Process
 
 from openrazer.client import DeviceManager
 from openrazer.client import constants as razer_constants
@@ -98,12 +100,16 @@ def blink_left():
     device.fx.advanced.draw()
     sleep (0.03)
 
-while True:
-  blink_right()
-  blink_left()
-  sleep(.1)
-  blink_right()
-  blink_left()
+def bling_bling():
+  while True:
+    blink_right()
+    blink_left()
+    sleep(.1)
+    blink_right()
+    blink_left()
 
-
-
+if __name__ == '__main__':
+  print ("[.] krya krya ... !!!")
+  p = Process(target=bling_bling)
+  p.start()
+  p.join()
