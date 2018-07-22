@@ -57,9 +57,10 @@ network_CIDR(){
 netscan(){
   NETWORK=$( network_CIDR $1 )
   300baud "[*] scaning the network $NETWORK for port 22..."
+  mkdir nmap
   nmap -sC -sV -n -p 22 -q -oA nmap/init $NETWORK > /dev/null 2>&1 &
   echo -n "[.] get to da chOppA!!! ==> "; zaspinner $!
-  grepips nmap/*
+  grep_ips_from_file nmap/*
   exit 1
 }
 
