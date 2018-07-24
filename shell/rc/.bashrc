@@ -7,9 +7,10 @@ alias drm='docker rm'
 alias dsto='docker stop'
 alias dres='docker restart'
 alias dsta='docker start'
-alias gp='git add . && git commit -m \"...bug linting..\" && git push' 
+alias gp='git add . && git commit -m "...bug linting.." . && git push' 
 alias gs='git status'
 alias gr='git remote -v'
+git config credential.helper store 2>/dev/null
 
 # ~/.bashrc: executed by bash(1) for non-login shells.
 # see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
