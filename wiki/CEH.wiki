@@ -1,0 +1,131 @@
+
+
+Most common 5 stages:
+
+0. tor, proxychains
+1. Discovery/Scan ??
+2. Pre-at 
+3. At
+4. post-at
+
+===>
+http://www.gocertify.com/ethical-hacker/ethical-hacking-general-knowledge-quiz
+===>
+
+- mySQL default port 5432
+
+- Fumbling is the term for systematically failing to access a resource.
+
+- capinfos is a Wireshark command line tool that reads a capture and returns statistics on that file.
+
+- Rainbow tables are precomputed hashes that are intended to contain every possible combination of characters for the purpose of comparing them against a captured password.
+
+- The Forwardedevents log is the log class that stores events from remote hosts.
+- Using a harmless executable file to hide malware is known as using wrappers.
+
+- The rolling buffer is a memory location where data is cyclically dumped.
+
+- HTTP Header --> Referer is the header that includes the URL of the web page containing the link that initiated the current request.
+
+- 128 is the Time-to-Live (TTL) value in Windows.
+
+
+Windows
+
+Install the Xming software.
+If you have not already done so, download putty.exe from the PuTTY site and install it.
+Run Xming on your PC to start the X server.  You should see the Xming icon in the taskbar if it is running (although you may have to click the little arrow in the taskbar to see it)
+Run PuTTY and set things up as follows:
+
+- Enter the server name in Host Name
+- Make sure the Connection type is set to SSH
+- Enable X11 forwarding (Connection > SSH > X11)
+
+Log in using your normal IU username and passphrase
+Once you are logged into the linux system, you can just run the GUI program of your choice (ie. matlab, mathematics, etc) and it will display on your PC.
+
+
+Hash Examples
+Likely just use hash-identifier for this but here are some example hashes:
+
+==> Hashes
+
+HASH	EXAMPLE
+
+MD5 Hash Example	8743b52063cd84097a65d1633f5c74f5
+MD5 $PASS:$SALT Example	01dfae6e5d4d90d9892622325959afbe:7050461
+MD5 $SALT:$PASS	f0fda58630310a6dd91a7d8f0a4ceda2:4225637426
+SHA1 Hash Example	b89eaac7e61417341b710b727768294d0e6a277b
+SHA1 $PASS:$SALT	2fc5a684737ce1bf7b3b239df432416e0dd07357:2014
+SHA1 $SALT:$PASS	cac35ec206d868b7d7cb0b55f31d9425b075082b:5363620024
+SHA-256	127e6fbfe24a750e72930c220a8e138275656b
+8e5d8f48a98c3c92df2caba935
+SHA-256 $PASS:$SALT	c73d08de890479518ed60cf670d17faa26a4a7
+1f995c1dcc978165399401a6c4
+SHA-256 $SALT:$PASS	eb368a2dfd38b405f014118c7d9747fcc97f4
+f0ee75c05963cd9da6ee65ef498:560407001617
+SHA-512	82a9dda829eb7f8ffe9fbe49e45d47d2dad9
+664fbb7adf72492e3c81ebd3e29134d9bc
+12212bf83c6840f10e8246b9db54a4
+859b7ccd0123d86e5872c1e5082f
+SHA-512 $PASS:$SALT	e5c3ede3e49fb86592fb03f471c35ba13e8
+d89b8ab65142c9a8fdafb635fa2223c24e5
+558fd9313e8995019dcbec1fb58414
+6b7bb12685c7765fc8c0d51379fd
+SHA-512 $SALT:$PASS	976b451818634a1e2acba682da3fd6ef
+a72adf8a7a08d7939550c244b237c72c7d4236754
+4e826c0c83fe5c02f97c0373b6b1
+386cc794bf0d21d2df01bb9c08a
+NTLM Hash Example	b4b9b02e6f09a9bd760f388b67351e2b
+
+==> hashcat 
+[!]
+http://www.miraclesalad.com/webtools/md5.php
+
+Unix = MD5 hash
+Kali = SHA512 hash
+Windows XP = LM Hash
+Windows 7 = NTLM Hash
+
+-a 0
+0 = Straight
+1 = Combination
+2 = Toggle case
+3 = Brute Force
+
+-m 0 (Each number is a different Hash Type)
+0 = MD5 hash…. so we use -m 0
+50 = HMAC-MD5….so we use -m 50
+1000 = NTLM….so we use -m 1000
+
+hashcat -m 0 -a 0 /root/hashes/hashes.txt /root/rockyou.txt
+
+hashcat -m 0 -a 1 /root/hashes/hashes.txt /root/rockyou.txt
+(to launch a combination against MD5 password hashes)
+
+===>
+
+Rockyou contains 14 million unique records.
+
+https://crackstation.net/buy-crackstation-wordlist-password-cracking-dictionary.htm
+For MD5 and SHA1 hashes, there is a 190GB, 15-billion-entry lookup table, and for other hashes, they offer a 19GB 1.5-billion-entry lookup table.
+
+rainbow tables:
+https://www.freerainbowtables.com/en/tables2/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
