@@ -1,7 +1,8 @@
+ADDED ALL, then working still troubleshooting 
 |||||||||||||||||||||||
-Options tried and FAILED:
+Options tried 
 1. make changes to udev /etc/udev/rules.d/75-mac-spoof.rules
-ACTION=="add", SUBSYSTEM=="net", ATTR{address}=="XX:XX:XX:XX:XX:XX", RUN+="/usr/bin/ip link set eth0 address XX:XX:XX:XX:XX:XX"
+ACTION=="add", SUBSYSTEM=="net", ATTR{address}=="XX:XX:XX:XX:XX:XX", RUN+="/usr/bin/ip link set dev %k address XX:XX:XX:XX:XX:XX"
 
 2. make changes to /etc/network/interfaces
 
