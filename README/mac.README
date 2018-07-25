@@ -1,0 +1,20 @@
+|||||||||||||||||||||||
+Options tried and FAILED:
+1. make changes to udev /etc/udev/rules.d/75-mac-spoof.rules
+ACTION=="add", SUBSYSTEM=="net", ATTR{address}=="XX:XX:XX:XX:XX:XX", RUN+="/usr/bin/ip link set eth0 address XX:XX:XX:XX:XX:XX"
+
+2. make changes to /etc/network/interfaces
+
+auto eth0
+iface eth0 inet static
+    address 192.168.0.10
+    netmask 255.255.255.0
+    gateway 192.168.0.1
+    hwaddress ether XX:XX:XX:XX:XX:XX
+|||||||||||||||||||||||
+   
+[!] ==> WORKING
+
+Pass into Kernel
+/boot/cmdline.txt
+  smsc95xx.macaddr=XX:XX:XX:XX:XX:XX
