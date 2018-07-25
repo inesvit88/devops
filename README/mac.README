@@ -13,9 +13,50 @@ iface eth0 inet static
     gateway 192.168.0.1
     hwaddress ether XX:XX:XX:XX:XX:XX
 |||||||||||||||||||||||
+
+
+NEED TO TRY FOR DHCP!!!
+
+allow-hotplug enp3s0
+iface enp3s0 inet dhcp
+    hwaddress ether 00:11:22:33:44:55
+
    
 [!] ==> WORKING
 
 Pass into Kernel
 /boot/cmdline.txt
   smsc95xx.macaddr=XX:XX:XX:XX:XX:XX
+
+
+
+
+== from source
+https://unix.stackexchange.com/questions/366533/change-mac-address-permanently-inside-etc-network-interfaces
+
+Use the hwaddress ether inside your interface configuration block. Example:
+
+auto enp3s0
+iface enp3s0 inet static
+    address 192.0.2.7
+    netmask 255.255.255.0
+    gateway 192.0.2.254
+    hwaddress ether 00:11:22:33:44:55
+
+or, if dhcp:
+
+allow-hotplug enp3s0
+iface enp3s0 inet dhcp
+    hwaddress ether 00:11:22:33:44:55
+
+A detail that i have missed: The hwaddress configuration item needs to be after the gateway stanza, if you are setting a static ip address.
+
+Related stuff: Good detailed explanation of /etc/network/interfaces syntax?
+
+However, if you are having problemas while changing mac through network/interfaces you could do it through udev
+
+udev method - Create the file etc/udev/rules.d/75-mac-spoof.rules with the following content:
+
+ACTION=="add", SUBSYSTEM=="net", ATTR{address}=="XX:XX:XX:XX:XX:XX", RUN+="/usr/bin/ip link set dev %k address YY:YY:YY:YY:YY:YY"
+
+You cou
