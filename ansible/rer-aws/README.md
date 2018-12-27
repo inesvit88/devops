@@ -18,3 +18,5 @@ host_key_checking = False
 -- not related --
 
 git config --global credential.helper cache
+
+
