@@ -24,8 +24,6 @@ host_key_checking = False
 - [ ] Think about docker-swarm approach to container scalability
 
 
--- not related --
-
 git config --global credential.helper cache
 
 

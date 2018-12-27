@@ -1,0 +1,12 @@
+---
+- hosts: webserver
+  gather_facts: True
+  user: ec2-user
+  sudo: True
+  tasks:
+
+    # fetch instance data from the metadata servers in ec2
+    - ec2_facts:
+
+    # just show the instance-id
+    - debug: msg= "{{ hostvars[inventory_hostname]['ansible_ec2_instance_id'] }}"
