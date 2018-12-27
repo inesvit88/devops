@@ -13,6 +13,15 @@ To avoid host key checking, place **ansible.cfg** file along the playbooks with 
 [defaults]
 host_key_checking = False
 ```
+# TO-DO List
+
+- [ ] Install Jenkins
+- [ ] Configuire Jenkins pipelines for CI & CD
+- [ ] Automate Cloud provisioning from VPC
+- [ ] Autoconfig ansible instance 
+- [ ] Autoconfig docker instance 
+- [ ] Autoconfig WordPress instance 
+- [ ] Think about docker-swarm approach to container scalability
 
 
 -- not related --
