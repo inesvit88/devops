@@ -15,7 +15,7 @@ host_key_checking = False
 ```
 # TO-DO List
 
-- [ ] Install Jenkins
+- [X] Install Jenkins
 - [ ] Configuire Jenkins pipelines for CI & CD
 - [ ] Automate Cloud provisioning from VPC
 - [ ] Autoconfig ansible instance 
