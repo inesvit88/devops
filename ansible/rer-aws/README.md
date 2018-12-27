@@ -13,3 +13,8 @@ To avoid host key checking, place **ansible.cfg** file along the playbooks with 
 [defaults]
 host_key_checking = False
 ```
+
+
+-- not related --
+
+git config --global credential.helper cache
