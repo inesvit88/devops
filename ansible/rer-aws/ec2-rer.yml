@@ -1,0 +1,49 @@
+---
+  - name: Provision an EC2 instance
+    hosts: local
+    connection: local
+    gather_facts: False
+    tags: provisioning
+
+# Necessary Variables for creating/provisioning the EC2 Instance
+    vars:
+      instance_type: t2.micro
+      security_group: sg-0bd2a6721a8180e8f 
+      image_ami: ami-02e680c4540db351e
+      keypair: dev2
+      region: us-east-2b
+      count: 2
+
+    tasks:
+      - name: Create a security group
+        local_action:
+          module: ec2_group
+          name: "{{ security_group }}"
+          region: "{{ region }}"
+          rules:
+            - proto: tcp
+              from_port: 22
+              to_port: 22
+              cidr_ip: 18.224.27.119/32
+            - proto: tcp
+              from_port: 80
+              to_port: 80
+              cidr_ip: 0.0.0.0/0
+          rules_egress:
+            - proto: all
+              cidr_ip: 0.0.0.0/0
+        register: basic_firewall
+
+
+      - name: Launch the new EC2 instance
+        local_action: ec2
+                      group={{ security_group }}
+                      instance_type={{ instance_type }}
+                      image={{ image }}
+                      wait=true
+                      region={{ region }}
+                      keypair={{ keypair }}
+                      count={{ count }}
+        register: ec2
+        
+
