@@ -28,9 +28,9 @@
         become: yes
 
       - name: Run docker-compose file and start the container(s)
-        command: docker-compose -f docker-compose-wp.yml up -d
-          args:
-            chdir: /etc/docker-compose/wp
+        command: /usr/local/bin/docker-compose -f docker-compose-wp.yml up -d
+        args:
+          chdir: /etc/docker-compose/wp
         register: myoutput
         become: yes
 
