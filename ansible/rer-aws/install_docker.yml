@@ -43,7 +43,7 @@
 
     - name: Install container-selinux-2.9 dependency
       package:
-        name: http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.74-1.el7.noarch.rpm
+        name: http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.68-1.el7.noarch.rpm
         state: latest
       become: yes
 
