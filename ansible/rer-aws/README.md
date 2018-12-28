@@ -26,4 +26,6 @@ host_key_checking = False
 
 git config --global credential.helper cache
 
+export AWS_ACCESS_KEY_ID=""
+export AWS_SECRET_ACCESS_KEY=""
 
