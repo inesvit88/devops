@@ -26,7 +26,7 @@
             - proto: tcp
               from_port: 22
               to_port: 22
-              cidr_ip: 18.224.27.119/32
+              cidr_ip: 18.216.164.65/32
             - proto: tcp
               from_port: 80
               to_port: 80
