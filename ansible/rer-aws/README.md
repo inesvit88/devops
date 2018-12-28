@@ -36,6 +36,7 @@ host_key_checking = False
 
 ### git related
 git config --global credential.helper cache
+git config credential.helper 'cache --timeout=3600'
 
 ### ansible aws creds
 ```
