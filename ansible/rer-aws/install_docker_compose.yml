@@ -10,3 +10,19 @@
           dest: /usr/local/bin/docker-compose
           mode: 0775
         become: yes
+
+      - name: Creates docker-compose yaml project directory
+        file:
+          path: /etc/docker-compose/wp
+          state: directory
+        become: yes
+
+      - name: Copy docker-compose-wp.yml
+        copy:
+          src: /home/zhopa/github/devops/ansible/rer-aws/compose/docker-compose-wp.yml 
+          dest: /etc/docker-compose/wp/docker-compose-wp.yml
+          owner: ec2-user
+          group: ec2-user
+          mode: 0600
+          backup: yes
+        become: yes
