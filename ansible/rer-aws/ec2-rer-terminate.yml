@@ -1,5 +1,5 @@
 ---
-- hosts: delete
+- hosts: webserver
   gather_facts: True
   user: ec2-user
   become: yes
@@ -17,7 +17,7 @@
   vars:
     region: "us-east-2"
   tasks:
-    - name: destroy all instances
+    - name: Terminate instances
       ec2: state='absent'
            region={{ region }}
            instance_ids={{ item }}
