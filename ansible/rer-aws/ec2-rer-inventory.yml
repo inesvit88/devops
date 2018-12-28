@@ -9,4 +9,4 @@
     - ec2_facts:
 
     # just show the instance-id
-    - debug: msg= "{{ hostvars[inventory_hostname]['ansible_ec2_instance_id'] }}"
+    - debug: msg="{{ hostvars[inventory_hostname]['ansible_ec2_instance_id'] }}"
