@@ -11,7 +11,7 @@
     # just show the instance-id
     - debug: msg="{{ hostvars[inventory_hostname]['ansible_ec2_instance_id'] }}"
 
-- hosts: delete
+- hosts: webserver
   gather_facts: True
   connection: local
   vars:
