@@ -13,7 +13,7 @@
       keypair: dev2
       region: us-east-2
       zone: us-east-2b
-      count: 10 
+      count: 2 
 
     tasks:
       - name: Create a security group
