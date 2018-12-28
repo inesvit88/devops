@@ -1,0 +1,235 @@
+Install:
+
+
+Themes
+https://wordpress.org/themes/colormag/
+
+ColorMag
+
+Plugins
+
+themegrill-demo-importer
+ThemeGrill
+
+Newsomatic
+
+RSS feeds:
+
+https://blog.feedspot.com/russian_news_rss_feeds/
+
+
+
+https://www.vedomosti.ru/rss/rubric/economics
+
+https://www.vedomosti.ru/rss/rubric/finance
+
+https://www.rt.com/rss/
+
+https://www.kommersant.ru/RSS/section-economics.xml
+
+https://themoscowtimes.com/feeds/business.xml
+
+https://meduza.io/rss/en/all
+
+http://tass.com/rss/v2.xml
+
+
+
+
+[wp_rss_aggregator]
+
+
+
+
+ Try renaming the wp-content/plugins folder to quickly
+ disable all plugins and then try logging in. Add the plugins back into the wp-content/plugins folder to find the culprit.
+
+
+
+66.96.162.131
+
+www.domain.com
+
+
+
+
+
+
+
+TODO
+12/23/2018
+
+1. Install WP RSS aggregator plugin
+2. Install WP RSS aggregator bundle
+3.
+
+
+
+Test post
+
+Russia’s economic freedom score is 58.2, making its economy the 107th freest in the 2018 Index. Its overall score has increased by 1.1 points, with higher scores for the trade freedom and tax burden indicators outpacing declines in fiscal health and government integrity. Russia is ranked 41st among 44 countries in the Europe region, and its overall score is below the regional and world averages.
+
+
+
+
+https://tradingeconomics.com/russia/unemployment-rate
+
+
+embed
+
+https://www.bloomberg.com/topics/countries/RU
+https://www.reuters.com/places/russia
+
+
+
+<iframe src='https://tradingeconomics.com/embed/?s=ruuer&v=201812191351a1&h=300&w=600&ref=/russia/unemployment-rate' height='300' width='600'  frameborder='0' scrolling='no'></iframe><br />source: <a href='https://tradingeconomics.com/russia/unemployment-rate'>tradingeconomics.com</a>
+
+
+
+
+A@66.96.162.131n/a
+more_vert
+Aftp66.96.162.131n/a
+more_vert
+Amx66.96.140.172n/a
+more_vert
+Amx66.96.140.173n/a
+more_vert
+Apop66.96.162.131n/a
+more_vert
+Aimap66.96.162.131n/a
+more_vert
+Asmtp66.96.162.131n/a
+more_vert
+Amail66.96.162.131n/a
+more_vert
+Awebmail66.96.162.48n/a
+more_vert
+Aemail66.96.162.48n/a
+more_vert
+A*66.96.162.131n/a
+more_vert
+CNAMEdkim._domainkeycur.dkim.v.eigmail.netn/a
+more_vert
+CNAME_acme-challengerussianeconomyreport.com.letsencrypt.vdeck.eigdyn.comn/a
+more_vert
+MX@mx.russianeconomyreport.com30
+more_vert
+MX*mx.russianeconomyreport.com30
+more_vert
+NS@ns1.domain.comn/a
+more_vert
+NS@ns2.domain.comn/a
+more_vert
+SOA@ns1.domain.com. dnsadmin.domain.com. 2017012244 10800 3600 604800 3600n/a
+more_vert
+TXT@v=spf1 ip4:66.96.128.0/18 ?alln/a
+more_vert
+
+
+
+
+ec2
+18.217.61.178
+
+lb
+rer-lb-732142456.us-east-2.elb.amazonaws.com
+
+Name:    rer-lb-732142456.us-east-2.elb.amazonaws.com
+Addresses:  3.17.49.38
+          13.59.141.33
+
+
+18.217.61.178
+rer-lb-732142456.us-east-2.elb.amazonaws.com
+
+aws.russianeconomyreport.com
+
+
+
+updated
+A*66.96.162.131
+A@66.96.162.131
+
+
+updated
+v=spf1 ip4:66.96.128.0/18 ?all
+
+v=spf1 ip4:13.59.141.0/20 ?all
+
+
+
+
+
+http://www.russianeconomyreport.com/
+
+old.russianeconomyreport.com
+
+
+
+
+
+
+rer-lb-732142456.us-east-2.elb.amazonaws.com
+3.16.251.39
+13.59.141.33
+
+
+
+18.224.27.119
+
+
+rer-lb-732142456.us-east-2.elb.amazonaws.com
+
+us-east-2a
+18.223.106.141 
+
+us-east-2c
+18.224.27.119
+
+
+HsxDBs$oGan^
+
+
+
+http-lb-598093941.us-east-2.elb.amazonaws.com
+
+
+
+
+
+
+sg-0bd2a6721a8180e8f
+ami-02e680c4540db351e
+
+
+https://www.agix.com.au/build-an-ec2-using-ansible-step-by-step/
+
+ansible-playbook -i ./hosts ec2-rer.yml
+
+
+
+
+    "ansible_facts": {
+        "ansible_ec2_ami_id": "ami-02e680c4540db351e",
+        "ansible_ec2_ami_launch_index": "9",
+        "ansible_ec2_ami_manifest_path": "(unknown)",
+        "ansible_ec2_block_device_mapping_ami": "/dev/xvda",
+        "ansible_ec2_block_device_mapping_root": "/dev/xvda",
+        "ansible_ec2_events_maintenance_history": "[]",
+        "ansible_ec2_events_maintenance_scheduled": "[]",
+        "ansible_ec2_hostname": "ip-172-31-22-255.us-east-2.compute.internal",
+        "ansible_ec2_instance_action": "none",
+        "ansible_ec2_instance_id": "i-03c72a2a53ea25e90",
+
+
+
+http://mirror.centos.org/centos/7/extras/x86_64/Packages/container-selinux-2.68-1.el7.noarch.rpm
+
+1. Install WP
+2. Install theme (newsmagz)
+3. Install RSS plugin
+4. Import the site xml
+
+
+
