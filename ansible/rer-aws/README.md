@@ -15,7 +15,8 @@ host_key_checking = False
 ```
 # TO-DO List
 
-- [ ] Install docker
+- [X] Install docker
+- [X] Install docker-compose
 - [ ] Install JIRA
 - [ ] Install Jenkins
 
@@ -26,9 +27,20 @@ host_key_checking = False
 - [ ] Autoconfig WordPress instance 
 - [ ] Think about docker-swarm approach to container scalability
 
+# Automation TO DO list
 
+- [ ] Install & config WP
+- [ ] Install WP Theme
+- [ ] Install WP plugin
+- [ ] Import site xml
+
+### git related
 git config --global credential.helper cache
 
+### ansible aws creds
+```
 export AWS_ACCESS_KEY_ID=""
 export AWS_SECRET_ACCESS_KEY=""
+```
+
 
