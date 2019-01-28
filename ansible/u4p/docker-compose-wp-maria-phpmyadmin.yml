@@ -9,10 +9,10 @@ services:
 #    volumes:
 #      - ./dep/mysql:/docker-entrypoint-initdb.d
     environment:  # Set up mysql database name and password
-      MYSQL_ROOT_PASSWORD: vesseniypervygrom85
+      MYSQL_ROOT_PASSWORD: wordpress1
       MYSQL_DATABASE: wordpress
       MYSQL_USER: wordpress
-      MYSQL_PASSWORD: sredibulvarovidomov7
+      MYSQL_PASSWORD: wordpress2
   wordpress:
     image: wordpress
     container_name: wordpress 
@@ -25,7 +25,7 @@ services:
     restart: always
     environment:
       WORDPRESS_DB_HOST: db:3306
-      WORDPRESS_DB_PASSWORD: vesseniypervygrom85
+      WORDPRESS_DB_PASSWORD: wordpress1
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
