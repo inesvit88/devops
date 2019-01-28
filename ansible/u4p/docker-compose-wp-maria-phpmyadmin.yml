@@ -1,0 +1,38 @@
+version: '2'
+
+services:
+  db:
+    container_name:  database
+    image: mariadb  # Pull mysql image from Docker Hub
+#    ports:  # Set up ports exposed for other containers to connect to
+#      - "3306:3306"
+#    volumes:
+#      - ./dep/mysql:/docker-entrypoint-initdb.d
+    environment:  # Set up mysql database name and password
+      MYSQL_ROOT_PASSWORD: vesseniypervygrom85
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: sredibulvarovidomov7
+  wordpress:
+    image: wordpress
+    container_name: wordpress 
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    links: 
+      - db
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_PASSWORD: vesseniypervygrom85
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    depends_on: 
+      - db
+    restart: always
+#    ports:
+#      - "8181:80"
+    environment:
+     - PMA_ARBITRARY=1
