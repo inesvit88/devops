@@ -1,0 +1,10 @@
+compile with
+
+gcc -fno-stack-protector -z execstack -o shelltest shelltest.c -g
+
+-- protection --
+ASLR: Address Space Layout Randomization
+
+
+-->> Modern Linux systems:
+https://www.exploit-db.com/papers/24085

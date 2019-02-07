@@ -11,7 +11,8 @@ _start:
     mov eax,88
     mov ebx,0xfee1dead
     mov ecx,672274793
-    mov edx,0x4321fedc
+;    mov edx,0x4321fedc
+    mov edx, 0x01234567
     mov esi,0
     int 0x80
 

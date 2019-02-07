@@ -24,7 +24,7 @@ _start:
 	sub rsp, 0x40
 	xor rdx, rdx
 	mov rdx, 3 
-	mov rcx, 2 
+	mov rcx, 4
 	mov [rbp-0x10], rdx
 	mov [rbp-0x18], rcx
 	add rdx, rcx

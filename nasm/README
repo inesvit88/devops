@@ -1,0 +1,69 @@
+https://reverseengineering.stackexchange.com/questions/15960/is-there-any-tool-to-visually-see-program-stack-in-linux-while-debugging/15968#15968
+
+
+--> r2
+
+Debugging
+To debug a program with radare2 call it with the debug flag -d:
+$ r2 -d /bin/ls
+
+Now the program is opened in debug mode.
+Use v! to show the Visual Panel modes. Now you can see the assembly at the left and the stack panel at the right. You can step into and step over using s or S accordingly. Use ? to list more commands in the Visual Panels mode.
+
+
+--> gdb
+
+
+You can use gdb, for example let see this simple program
+
+#include <stdio.h>
+
+int main(){
+  printf("hello world\n");
+  return 0;
+}
+Compile it
+
+gcc -o simple simple.c -g
+Run with gdb
+
+gdb ./simple
+Set a breakpoint in the main function and run
+
+(gdb) b main
+(gdb) r
+And now we can look at the registers contents
+
+(gdb) i r 
+rax            0x400526 0x400526
+rbx            0x0  0x0
+rcx            0x0  0x0
+rdx            0x7fffffffe518   0x7fffffffe518
+rsi            0x7fffffffe508   0x7fffffffe508
+rdi            0x1  0x1
+rbp            0x7fffffffe420   0x7fffffffe420
+rsp            0x7fffffffe420   0x7fffffffe420
+r8             0x4005b0 0x4005b0
+r9             0x7ffff7de78e0   0x7ffff7de78e0
+r10            0x846    0x846
+r11            0x7ffff7a2e740   0x7ffff7a2e740
+r12            0x400430 0x400430
+r13            0x7fffffffe500   0x7fffffffe500
+r14            0x0  0x0
+r15            0x0  0x0
+rip            0x40052a 0x40052a <main+4>
+eflags         0x246    [ PF ZF IF ]
+cs             0x33 0x33
+ss             0x2b 0x2b
+ds             0x0  0x0
+es             0x0  0x0
+fs             0x0  0x0
+gs             0x0  0x0
+Dump the stack
+
+    (gdb) x/20x $sp
+    0x7fffffffe420: 0x00400540  0x00000000  0xf7a2e830  0x00007fff
+    0x7fffffffe430: 0x00000000  0x00000000  0xffffe508  0x00007fff
+    0x7fffffffe440: 0xf7ffcca0  0x00000001  0x00400526  0x00000000
+    0x7fffffffe450: 0x00000000  0x00000000  0xbbbdddd1  0xdfdea768
+    0x7fffffffe460: 0x00400430  0x00000000  0xffffe500  0x00007fff
