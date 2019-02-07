@@ -1,0 +1,42 @@
+version: '2'
+
+services:
+  db:
+    container_name: database
+    image: mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD: 0HoLm3WmBM8b1V79XeIqA74yrIxs
+      MYSQL_DATABASE: wp101
+      MYSQL_USER: steak
+      MYSQL_PASSWORD: gz9Thy7JptK41KLUrHE
+    volumes:
+      - /data/site1/mysql_data:/var/lib/mysql
+    restart: always
+
+  wordpress:
+    image: wordpress
+    container_name: wordpress
+    depends_on:
+      - db
+    ports:
+      - "80:80"
+    volumes:
+      - /data/site1/wp_data:/var/www/html
+    links:
+      - db
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_PASSWORD: 0HoLm3WmBM8b1V79XeIqA74yrIxs
+
+# not needed for PROD 
+#
+#  phpmyadmin:
+#    image: phpmyadmin/phpmyadmin
+#    container_name: phpmyadmin
+#    depends_on:
+#      - db
+#    restart: always
+#    environment:
+#     - PMA_ARBITRARY=1
+
