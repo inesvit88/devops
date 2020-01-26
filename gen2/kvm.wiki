@@ -1,0 +1,34 @@
+1. Convert ova images 
+
+tar -xvf file.ova
+qemu-img convert librenms-centos-7.6-x86_64-disk001.vmdk librenms-centos-7.6-x86_64-disk001.qcow2 -O qcow2
+
+-- run virt-manager, import existing image, done.
+
+-- vulnhub DC-2
+arp -n
+
+nmap -sC -sV -oA ./nmap/dc2 IP_ADDRESS
+
+Nmap scan report for 192.168.122.114
+Host is up (0.00020s latency).
+Not shown: 999 closed ports
+PORT   STATE SERVICE VERSION
+80/tcp open  http    Apache httpd 2.4.10 ((Debian))
+|_http-server-header: Apache/2.4.10 (Debian)
+|_http-title: Did not follow redirect to http://dc-2/
+|_https-redirect: ERROR: Script execution failed (use -d to debug)
+
+Service detection performed. Please report any incorrect results at https://nmap.org/submit/ .
+Nmap done: 1 IP address (1 host up) scanned in 9.98 seconds
+
+[+] add dc-2 IP address to /etc/hosts
+
+wpscan to enumerate users
+cewl to create a password dictionary
+wpscan to bruteforce user/pass
+
+nmap -sC -sV -p 7744 IP_ADDRESS (ssh running)
+
+
+
